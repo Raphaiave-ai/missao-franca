@@ -3,244 +3,179 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Missão França 🇫🇷</title>
+<title>Missão Idiomas 🌍</title>
 
 <style>
-* { box-sizing: border-box; }
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;font-family:Arial;background:#f2f2f2}
+header{background:#0b1f3a;color:white;text-align:center;padding:22px;font-size:26px;font-weight:bold}
+#app{height:calc(100% - 80px);display:flex;justify-content:center;align-items:center;padding:12px}
 
-html, body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f2f2f2;
+.card{
+  width:100%;height:100%;max-height:720px;
+  background:white;border-radius:24px;padding:22px;
+  box-shadow:0 15px 40px rgba(0,0,0,.2);
+  display:flex;flex-direction:column;justify-content:space-between;
+  animation:fade .4s
 }
+@keyframes fade{from{opacity:0}to{opacity:1}}
 
-body {
-  display: flex;
-  flex-direction: column;
+#question{font-size:30px;font-weight:bold;margin:18px 0}
+.option{width:100%;padding:20px;margin-bottom:12px;font-size:22px;border-radius:18px;border:none;background:#2196f3;color:white}
+.option:active{transform:scale(.95)}
+.correct{background:#4caf50!important}
+.wrong{background:#f44336!important}
+
+#listen{background:#ff5252;color:white;font-size:22px;padding:16px;border-radius:18px;border:none}
+
+#scoreBox{font-size:20px;text-align:center}
+#achievement{margin-top:8px;font-size:22px;font-weight:bold;color:#4caf50}
+
+.big{width:100%;padding:22px;font-size:26px;border-radius:20px;border:none;font-weight:bold;margin-top:18px}
+.en{background:#1e90ff;color:white}
+.fr{background:#0b1f3a;color:white}
+
+#start,#nextLevel{
+  width:100%;height:100%;border-radius:24px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center
 }
-
-header {
-  background: #0b1f3a;
-  color: white;
-  text-align: center;
-  padding: 22px;
-  font-size: 26px;
-  font-weight: bold;
-}
-
-#app {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 16px;
-}
-
-.card {
-  width: 100%;
-  height: 100%;
-  max-height: 700px;
-  background: white;
-  border-radius: 24px;
-  padding: 24px;
-  text-align: center;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-#listen {
-  background: #ff5252;
-  color: white;
-  font-size: 22px;
-  padding: 18px;
-  border-radius: 18px;
-  border: none;
-}
-
-#question {
-  font-size: 30px;
-  font-weight: bold;
-  margin: 20px 0;
-}
-
-.option {
-  width: 100%;
-  padding: 20px;
-  margin-bottom: 12px;
-  font-size: 22px;
-  border-radius: 18px;
-  border: none;
-  background: #2196f3;
-  color: white;
-}
-
-.correct { background: #4caf50 !important; }
-.wrong { background: #f44336 !important; }
-
-#scoreBox {
-  font-size: 20px;
-}
-
-#achievement {
-  font-size: 22px;
-  color: #4caf50;
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-#start {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #002654, #ffffff, #ed2939);
-  border-radius: 24px;
-  padding: 40px 20px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-#start h1 { font-size: 42px; }
-#start p { font-size: 24px; }
-
-#start button {
-  margin-top: 30px;
-  width: 100%;
-  padding: 22px;
-  font-size: 26px;
-  border-radius: 20px;
-  border: none;
-  background: #1e90ff;
-  color: white;
-  font-weight: bold;
-}
+#start{background:linear-gradient(135deg,#002654,#fff,#ed2939)}
 </style>
 </head>
 
 <body>
 
-<header>Missão França 🇫🇷</header>
+<header>Missão Idiomas 🌍</header>
 
 <div id="app">
 
 <div id="start">
-  <h1>🇫🇷 Bienvenue</h1>
-  <p>Modo Iniciante</p>
-  <button onclick="startGame()">Iniciar estudo</button>
+  <h1>🎮 Escolha o idioma</h1>
+  <button class="big en" onclick="selectLang('en')">🇬🇧 Aprender Inglês</button>
+  <button class="big fr" onclick="selectLang('fr')">🇫🇷 Aprender Francês</button>
 </div>
 
-<div id="game" style="display:none;width:100%;height:100%;">
+<div id="game" style="display:none;width:100%;height:100%">
   <div class="card">
-
     <button id="listen" onclick="speak()">🔊 Ouvir pronúncia</button>
-
     <div id="question"></div>
-
     <div>
       <button class="option" id="a0" onclick="answer(0)"></button>
       <button class="option" id="a1" onclick="answer(1)"></button>
       <button class="option" id="a2" onclick="answer(2)"></button>
     </div>
-
     <div id="scoreBox">
-      Acertos: <span id="score">0</span>/25
+      Acertos: <span id="score">0</span>
       <div id="achievement"></div>
     </div>
-
   </div>
+</div>
+
+<div id="nextLevel" style="display:none">
+  <h1>🎉 Parabéns!</h1>
+  <p>Você concluiu este nível</p>
+  <button class="big fr" onclick="startNextLevel()">Iniciar próximo nível</button>
 </div>
 
 </div>
 
 <script>
-const questions = [
-{ fr:"Bonjour", a:["Olá","Tchau","Obrigado"], c:0 },
-{ fr:"Merci", a:["Desculpa","Obrigado","Por favor"], c:1 },
-{ fr:"Au revoir", a:["Boa noite","Até logo","Olá"], c:1 },
-{ fr:"S’il vous plaît", a:["Por favor","Obrigado","Desculpa"], c:0 },
-{ fr:"Bonsoir", a:["Boa noite","Bom dia","Até logo"], c:0 },
-{ fr:"Excusez-moi", a:["Com licença","Obrigado","Por favor"], c:0 },
-{ fr:"Je ne comprends pas", a:["Não entendo","Entendi","Concordo"], c:0 },
-{ fr:"Parlez-vous portugais ?", a:["Você fala português?","Onde fica?","Quanto custa?"], c:0 },
-{ fr:"Je suis perdu", a:["Estou atrasado","Estou perdido","Estou bem"], c:1 },
-{ fr:"Où est la salle de bain ?", a:["Onde é o banheiro?","Onde fica o hotel?","Quanto custa?"], c:0 },
-{ fr:"Combien ça coûte ?", a:["Que horas são?","Quanto custa?","Onde fica?"], c:1 },
-{ fr:"Je voudrais de l’eau", a:["Quero água","Quero comida","Quero ajuda"], c:0 },
-{ fr:"Pouvez-vous m’aider ?", a:["Pode me ajudar?","Pode repetir?","Pode esperar?"], c:0 },
-{ fr:"À quelle heure ?", a:["Que horas?","Que dia?","Que lugar?"], c:0 },
-{ fr:"Je cherche un hôtel", a:["Procuro um hotel","Quero sair","Estou perdido"], c:0 },
-{ fr:"C’est loin ?", a:["É caro?","É longe?","É perto?"], c:1 },
-{ fr:"D’accord", a:["Discordo","Concordo","Não sei"], c:1 },
-{ fr:"Pas de problème", a:["Sem problema","Com problema","Talvez"], c:0 },
-{ fr:"Je comprends", a:["Eu entendo","Não entendo","Concordo"], c:0 },
-{ fr:"Je ne sais pas", a:["Não sei","Eu sei","Talvez"], c:0 },
-{ fr:"Pouvez-vous répéter ?", a:["Pode repetir?","Pode ajudar?","Pode esperar?"], c:0 },
-{ fr:"C’est bon", a:["Está bom","Está ruim","Está longe"], c:0 },
-{ fr:"À bientôt", a:["Até breve","Até nunca","Até amanhã"], c:0 },
-{ fr:"Bienvenue", a:["Bem-vindo","Obrigado","Até logo"], c:0 },
-{ fr:"Bonne chance", a:["Boa sorte","Boa noite","Bom dia"], c:0 }
-];
+let lang="fr";
+let level=1;
+let current=0;
+let score=0;
+let questions=[];
 
-let current = 0;
-let score = 0;
+const content={
+fr:{
+l1:[
+{q:"Bonjour",a:["Olá","Tchau","Obrigado"],c:0},
+{q:"Merci",a:["Obrigado","Por favor","Oi"],c:0},
+{q:"Au revoir",a:["Até logo","Boa noite","Olá"],c:0}
+],
+l2:[
+{q:"Je voudrais réserver une chambre",a:["Quero reservar um quarto","Quero sair","Quero comer"],c:0}
+],
+voice:"fr-FR"
+},
+en:{
+l1:[
+{q:"Hello",a:["Olá","Tchau","Obrigado"],c:0},
+{q:"Thank you",a:["Obrigado","Por favor","Oi"],c:0},
+{q:"Goodbye",a:["Até logo","Boa noite","Olá"],c:0}
+],
+l2:[
+{q:"I would like to book a room",a:["Quero reservar um quarto","Quero sair","Quero comer"],c:0}
+],
+voice:"en-US"
+}
+};
 
-function startGame(){
-  document.getElementById("start").style.display="none";
-  document.getElementById("game").style.display="block";
-  loadQuestion();
+function save(){
+  localStorage.setItem("progress_"+lang,JSON.stringify({level,current,score}));
 }
 
-function loadQuestion(){
-  const q = questions[current];
-  document.getElementById("question").innerText = q.fr;
-  q.a.forEach((t,i)=>{
-    const b = document.getElementById("a"+i);
-    b.innerText = t;
-    b.className = "option";
-  });
+function loadSave(){
+  const d=JSON.parse(localStorage.getItem("progress_"+lang));
+  if(d){level=d.level;current=d.current;score=d.score}
+}
+
+function selectLang(l){
+  lang=l;
+  loadSave();
+  questions=content[lang]["l"+level];
+  document.getElementById("start").style.display="none";
+  document.getElementById("game").style.display="block";
+  load();
+}
+
+function load(){
+  const q=questions[current];
+  document.getElementById("question").innerText=q.q;
+  q.a.forEach((t,i)=>{document.getElementById("a"+i).innerText=t});
+  document.getElementById("score").innerText=score;
+  checkAchievement();
 }
 
 function answer(i){
-  const q = questions[current];
-  const btn = document.getElementById("a"+i);
-
-  if(i === q.c){
-    btn.classList.add("correct");
-    score++;
-    document.getElementById("score").innerText = score;
-    checkAchievement();
-  } else {
-    btn.classList.add("wrong");
-  }
-
-  setTimeout(()=>{
-    current++;
-    if(current < questions.length){
-      loadQuestion();
-    } else {
-      document.getElementById("achievement").innerText =
-        "🎉 Parabéns! Próxima fase desbloqueada!";
+  const q=questions[current];
+  if(i===q.c){score++}
+  current++;
+  save();
+  if(current<questions.length){load()}
+  else{
+    if(level===1){
+      document.getElementById("game").style.display="none";
+      document.getElementById("nextLevel").style.display="flex";
+    }else{
+      alert("🏆 Curso concluído!");
+      localStorage.removeItem("progress_"+lang);
+      location.reload();
     }
-  },700);
+  }
+}
+
+function startNextLevel(){
+  level=2;current=0;score=0;
+  questions=content[lang].l2;
+  save();
+  document.getElementById("nextLevel").style.display="none";
+  document.getElementById("game").style.display="block";
+  load();
 }
 
 function checkAchievement(){
-  const a = document.getElementById("achievement");
-  if(score === 10) a.innerText = "🥉 Conquista: Iniciante!";
-  if(score === 20) a.innerText = "🥈 Conquista: Explorador!";
-  if(score === 25) a.innerText = "🥇 Pronto para o nível 2!";
+  const a=document.getElementById("achievement");
+  if(score>=25)a.innerText="🥇 Mestre";
+  else if(score>=20)a.innerText="🥈 Explorador";
+  else if(score>=10)a.innerText="🥉 Iniciante";
+  else a.innerText="";
 }
 
 function speak(){
-  const u = new SpeechSynthesisUtterance(questions[current].fr);
-  u.lang = "fr-FR";
-  u.rate = 0.9;
+  const u=new SpeechSynthesisUtterance(questions[current].q);
+  u.lang=content[lang].voice;
+  u.rate=.9;
   speechSynthesis.speak(u);
 }
 </script>
