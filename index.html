@@ -8,10 +8,61 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f0f0f0;
+  background: #f2f2f2;
 }
 
+/* ===== TELA INICIAL ===== */
+#start {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  background: linear-gradient(
+    120deg,
+    #002654,
+    #ffffff,
+    #ed2939
+  );
+  background-size: 400% 400%;
+  animation: france 8s ease infinite;
+}
+
+@keyframes france {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+#start h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  text-shadow: 0 3px 6px rgba(0,0,0,.4);
+}
+
+#start p {
+  font-size: 16px;
+  margin-bottom: 30px;
+  color: #111;
+}
+
+#start button {
+  padding: 16px 30px;
+  font-size: 18px;
+  border: none;
+  border-radius: 30px;
+  background: #0a1f44;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(0,0,0,.3);
+}
+
+/* ===== JOGO ===== */
 header {
+  width: 100%;
   background: #0a1f44;
   color: white;
   padding: 15px;
@@ -21,11 +72,11 @@ header {
 
 .container {
   max-width: 420px;
-  margin: 25px auto;
   background: white;
+  margin: 30px auto;
   padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,.1);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
   text-align: center;
 }
 
@@ -41,110 +92,100 @@ button {
 
 .btn-audio { background: #ff4d4d; color: white; }
 .btn { background: #1da1f2; color: white; }
-
 .correct { background: #2ecc71 !important; }
 .wrong { background: #e74c3c !important; }
 
-.status {
-  margin-top: 10px;
-  font-size: 14px;
-}
-
-.stats {
-  margin-top: 15px;
-  font-size: 13px;
-  color: #333;
-}
-
 .fade {
-  animation: fade 0.4s;
+  animation: pulse .35s;
+}
+@keyframes pulse {
+  from { transform: scale(.95); opacity: .6; }
+  to { transform: scale(1); opacity: 1; }
 }
 
-@keyframes fade {
-  from { transform: scale(0.9); opacity: 0.5; }
-  to { transform: scale(1); opacity: 1; }
+.status {
+  margin-top: 12px;
+  font-size: 14px;
 }
 </style>
 </head>
 
 <body>
 
+<!-- TELA INICIAL -->
+<div id="start">
+  <h1>🎮 Missão França 🇫🇷</h1>
+  <p>Aprenda francês do zero</p>
+  <button onclick="iniciar()">▶️ Iniciar Estudo</button>
+</div>
+
+<!-- JOGO -->
+<div id="game" style="display:none;">
 <header>Missão França 🇫🇷</header>
 
 <div class="container" id="card">
   <button class="btn-audio" onclick="ouvir()">🔊 Ouvir</button>
-
   <h3 id="pergunta"></h3>
-
   <div id="opcoes"></div>
 
   <div class="status">
     <div id="nivel"></div>
     <div id="xp"></div>
     <div id="conquistas"></div>
+    <div id="stats"></div>
   </div>
-
-  <div class="stats" id="stats"></div>
+</div>
 </div>
 
 <script>
+function iniciar(){
+  document.getElementById("start").style.display="none";
+  document.getElementById("game").style.display="block";
+}
+
 const iniciante = [
- {fr:"Bonjour",pt:"Olá"},
- {fr:"Merci",pt:"Obrigado"},
- {fr:"Au revoir",pt:"Tchau"},
- {fr:"S'il vous plaît",pt:"Por favor"},
- {fr:"Bonsoir",pt:"Boa noite"},
- {fr:"Excusez-moi",pt:"Com licença"},
- {fr:"Très bien",pt:"Muito bem"},
- {fr:"À bientôt",pt:"Até logo"},
- {fr:"Oui",pt:"Sim"},
- {fr:"Non",pt:"Não"},
- {fr:"Pardon",pt:"Desculpa"},
- {fr:"Bienvenue",pt:"Bem-vindo"},
- {fr:"Salut",pt:"Oi"},
- {fr:"D'accord",pt:"Ok"},
- {fr:"Merci beaucoup",pt:"Muito obrigado"},
+ {fr:"Je suis",pt:"Eu sou"},
+ {fr:"J'ai",pt:"Eu tenho"},
+ {fr:"Je veux",pt:"Eu quero"},
+ {fr:"Je peux",pt:"Eu posso"},
+ {fr:"Je vais",pt:"Eu vou"},
+ {fr:"C'est",pt:"É"},
+ {fr:"Où est",pt:"Onde está"},
+ {fr:"Il y a",pt:"Existe"},
  {fr:"Je comprends",pt:"Eu entendo"},
- {fr:"Je ne comprends pas",pt:"Não entendo"},
- {fr:"Peut-être",pt:"Talvez"},
- {fr:"Toujours",pt:"Sempre"},
- {fr:"Jamais",pt:"Nunca"}
+ {fr:"Je ne sais pas",pt:"Não sei"},
+ {fr:"J'aime",pt:"Eu gosto"},
+ {fr:"Je parle",pt:"Eu falo"}
 ];
 
 const frases = [
- {fr:"Je suis fatigué",pt:"Estou cansado"},
- {fr:"Où est la salle de bain?",pt:"Onde fica o banheiro?"},
- {fr:"Combien ça coûte?",pt:"Quanto custa?"},
- {fr:"Je voudrais de l'eau",pt:"Eu gostaria de água"},
  {fr:"Pouvez-vous m'aider?",pt:"Você pode me ajudar?"},
- {fr:"Je parle un peu français",pt:"Eu falo um pouco de francês"},
- {fr:"C'est très bon",pt:"Está muito bom"},
- {fr:"Je suis perdu",pt:"Estou perdido"},
- {fr:"À quelle heure?",pt:"Que horas?"},
- {fr:"Je suis d'accord",pt:"Eu concordo"}
+ {fr:"Où est la gare?",pt:"Onde fica a estação?"},
+ {fr:"Je suis fatigué",pt:"Estou cansado"},
+ {fr:"Je voudrais de l'eau",pt:"Eu gostaria de água"},
+ {fr:"Combien ça coûte?",pt:"Quanto custa?"},
+ {fr:"Je parle un peu français",pt:"Falo um pouco de francês"}
 ];
 
 let acertos = Number(localStorage.getItem("acertos")) || 0;
 let hoje = new Date().toLocaleDateString();
-let stats = JSON.parse(localStorage.getItem("stats")||"{}");
+let stats = JSON.parse(localStorage.getItem("stats") || "{}");
 stats[hoje] = stats[hoje] || 0;
 
-function bancoAtual(){
-  return acertos < 50 ? iniciante : frases;
-}
+function banco(){ return acertos < 25 ? iniciante : frases; }
 
 function novaPergunta(){
-  const banco = bancoAtual();
-  const q = banco[Math.floor(Math.random()*banco.length)];
+  const lista = banco();
+  const q = lista[Math.floor(Math.random()*lista.length)];
   document.getElementById("pergunta").innerText =
-    (acertos<50?"(Iniciante) ":"(Frases) ") + q.fr;
+    (acertos<25?"(Iniciante) ":"(Frases) ")+q.fr;
 
-  let opcoes = [...banco].sort(()=>0.5-Math.random()).slice(0,3);
-  if(!opcoes.includes(q)) opcoes[0]=q;
+  let op=[...lista].sort(()=>.5-Math.random()).slice(0,3);
+  if(!op.includes(q)) op[0]=q;
 
-  const div = document.getElementById("opcoes");
+  const div=document.getElementById("opcoes");
   div.innerHTML="";
-  opcoes.sort(()=>0.5-Math.random()).forEach(o=>{
+  op.sort(()=>.5-Math.random()).forEach(o=>{
     let b=document.createElement("button");
     b.className="btn";
     b.innerText=o.pt;
@@ -153,40 +194,29 @@ function novaPergunta(){
   });
 
   window.atual=q;
-  atualizarStatus();
+  atualizar();
 }
 
 function responder(ok,btn){
   const card=document.getElementById("card");
-  if(ok){
-    btn.classList.add("correct");
-    acertos++;
-    stats[hoje]++;
-  }else{
-    btn.classList.add("wrong");
-  }
-
+  btn.classList.add(ok?"correct":"wrong");
+  if(ok){ acertos++; stats[hoje]++; }
   localStorage.setItem("acertos",acertos);
   localStorage.setItem("stats",JSON.stringify(stats));
-
   card.classList.add("fade");
-  setTimeout(()=>{
-    card.classList.remove("fade");
-    novaPergunta();
-  },400);
+  setTimeout(()=>{card.classList.remove("fade");novaPergunta();},350);
 }
 
-function atualizarStatus(){
+function atualizar(){
   document.getElementById("xp").innerText="Acertos: "+acertos;
   document.getElementById("nivel").innerText=
-    acertos<50?"Modo Iniciante":"Modo Frases";
+    acertos<25?"Modo Iniciante":"Modo Frases";
   let c=[];
   if(acertos>=10)c.push("🥉");
   if(acertos>=25)c.push("🥈");
   if(acertos>=50)c.push("🥇");
   document.getElementById("conquistas").innerText=
     c.length?"Conquistas: "+c.join(" "):"";
-
   document.getElementById("stats").innerText=
     "Hoje: "+stats[hoje]+" acertos";
 }
