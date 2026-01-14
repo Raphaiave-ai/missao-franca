@@ -2,16 +2,22 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Missão França 🇫🇷</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #f2f2f2;
+  min-height: 100vh;
 }
 
-/* ===== TELA INICIAL ===== */
+/* ================= TELA INICIAL ================= */
 #start {
   position: fixed;
   inset: 0;
@@ -19,14 +25,8 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: white;
   text-align: center;
-  background: linear-gradient(
-    120deg,
-    #002654,
-    #ffffff,
-    #ed2939
-  );
+  background: linear-gradient(120deg, #002654, #ffffff, #ed2939);
   background-size: 400% 400%;
   animation: france 8s ease infinite;
 }
@@ -38,45 +38,61 @@ body {
 }
 
 #start h1 {
-  font-size: 32px;
-  margin-bottom: 10px;
-  text-shadow: 0 3px 6px rgba(0,0,0,.4);
+  font-size: 48px;
+  margin-bottom: 16px;
+  color: #0a1f44;
+  text-shadow: 0 3px 6px rgba(0,0,0,.3);
 }
 
 #start p {
-  font-size: 16px;
-  margin-bottom: 30px;
+  font-size: 22px;
+  margin-bottom: 40px;
   color: #111;
 }
 
 #start button {
-  padding: 16px 30px;
-  font-size: 18px;
+  padding: 22px 50px;
+  font-size: 24px;
   border: none;
-  border-radius: 30px;
+  border-radius: 40px;
   background: #0a1f44;
   color: white;
   cursor: pointer;
-  box-shadow: 0 6px 15px rgba(0,0,0,.3);
+  box-shadow: 0 10px 25px rgba(0,0,0,.35);
 }
 
-/* ===== JOGO ===== */
+/* ================= HEADER ================= */
 header {
   width: 100%;
   background: #0a1f44;
   color: white;
-  padding: 15px;
+  padding: 16px;
   text-align: center;
   font-size: 22px;
 }
 
+/* ================= CENTRALIZAÇÃO REAL ================= */
+#game {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ================= CARD ================= */
 .container {
+  width: 100%;
   max-width: 420px;
   background: white;
-  margin: 30px auto;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+  padding: 22px;
+  border-radius: 18px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.15);
   text-align: center;
 }
 
@@ -85,13 +101,21 @@ button {
   padding: 14px;
   margin: 8px 0;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 16px;
   cursor: pointer;
 }
 
-.btn-audio { background: #ff4d4d; color: white; }
-.btn { background: #1da1f2; color: white; }
+.btn-audio {
+  background: #ff4d4d;
+  color: white;
+}
+
+.btn {
+  background: #1da1f2;
+  color: white;
+}
+
 .correct { background: #2ecc71 !important; }
 .wrong { background: #e74c3c !important; }
 
@@ -104,7 +128,7 @@ button {
 }
 
 .status {
-  margin-top: 12px;
+  margin-top: 14px;
   font-size: 14px;
 }
 </style>
@@ -115,24 +139,26 @@ button {
 <!-- TELA INICIAL -->
 <div id="start">
   <h1>🎮 Missão França 🇫🇷</h1>
-  <p>Aprenda francês do zero</p>
-  <button onclick="iniciar()">▶️ Iniciar Estudo</button>
+  <p>Aprenda francês do zero jogando</p>
+  <button onclick="iniciar()">▶️ INICIAR ESTUDO</button>
 </div>
 
 <!-- JOGO -->
 <div id="game" style="display:none;">
 <header>Missão França 🇫🇷</header>
 
-<div class="container" id="card">
-  <button class="btn-audio" onclick="ouvir()">🔊 Ouvir</button>
-  <h3 id="pergunta"></h3>
-  <div id="opcoes"></div>
+<div class="game-wrapper">
+  <div class="container" id="card">
+    <button class="btn-audio" onclick="ouvir()">🔊 Ouvir pronúncia</button>
+    <h3 id="pergunta"></h3>
+    <div id="opcoes"></div>
 
-  <div class="status">
-    <div id="nivel"></div>
-    <div id="xp"></div>
-    <div id="conquistas"></div>
-    <div id="stats"></div>
+    <div class="status">
+      <div id="nivel"></div>
+      <div id="xp"></div>
+      <div id="conquistas"></div>
+      <div id="stats"></div>
+    </div>
   </div>
 </div>
 </div>
@@ -140,9 +166,10 @@ button {
 <script>
 function iniciar(){
   document.getElementById("start").style.display="none";
-  document.getElementById("game").style.display="block";
+  document.getElementById("game").style.display="flex";
 }
 
+/* ===== DADOS ===== */
 const iniciante = [
  {fr:"Je suis",pt:"Eu sou"},
  {fr:"J'ai",pt:"Eu tenho"},
