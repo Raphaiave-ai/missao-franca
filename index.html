@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Missão França 🇫🇷</title>
 
 <style>
@@ -17,18 +18,10 @@ html, body {
   background: #f2f2f2;
 }
 
-/* CENTRALIZA TUDO */
+/* APP TELA CHEIA */
 body {
   display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* APP */
-#app {
-  width: 100%;
-  max-width: 480px;   /* 🔥 maior */
-  padding: 16px;
+  flex-direction: column;
 }
 
 /* TOPO */
@@ -36,124 +29,145 @@ header {
   background: #0b1f3a;
   color: white;
   text-align: center;
-  padding: 18px;
-  font-size: 24px;
-  font-weight: bold;
-  border-radius: 16px;
-  margin-bottom: 15px;
-}
-
-/* TELA INICIAL */
-#start {
-  background: linear-gradient(135deg, #002654, #ffffff, #ed2939);
-  border-radius: 20px;
-  padding: 40px 25px;
-  text-align: center;
-  animation: fade 1s ease;
-}
-
-#start h1 {
-  font-size: 38px;
-  margin-bottom: 10px;
-}
-
-#start p {
-  font-size: 22px;
-}
-
-#start button {
-  margin-top: 30px;
-  padding: 20px;
-  width: 100%;
-  font-size: 24px;
-  border-radius: 16px;
-  border: none;
-  background: #1e90ff;
-  color: white;
+  padding: 22px;
+  font-size: 26px;
   font-weight: bold;
 }
 
-/* CARD JOGO */
+/* CONTEÚDO CENTRAL */
+#app {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+/* CARD GRANDE */
 .card {
+  width: 100%;
+  height: 100%;
+  max-height: 680px;
   background: white;
-  border-radius: 20px;
-  padding: 25px;
+  border-radius: 24px;
+  padding: 24px;
   text-align: center;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-  animation: fade 0.5s ease;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 /* BOTÃO OUVIR */
 #listen {
   background: #ff5252;
   color: white;
-  font-size: 20px;
-  padding: 16px;
-  width: 100%;
-  border-radius: 14px;
+  font-size: 22px;
+  padding: 18px;
+  border-radius: 18px;
   border: none;
-  margin-bottom: 15px;
 }
 
 /* FRASE */
 #question {
-  font-size: 26px;
-  margin-bottom: 15px;
+  font-size: 32px;
+  font-weight: bold;
+  margin: 25px 0;
 }
 
 /* OPÇÕES */
-button.option {
+.option {
   width: 100%;
-  padding: 18px;
-  margin-top: 12px;
-  font-size: 20px;
-  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 14px;
+  font-size: 22px;
+  border-radius: 18px;
   border: none;
   background: #2196f3;
   color: white;
 }
 
-button.option.correct {
+.option.correct {
   background: #4caf50;
 }
 
-button.option.wrong {
+.option.wrong {
   background: #f44336;
 }
 
-/* ANIMAÇÃO */
-@keyframes fade {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+/* SCORE */
+#scoreBox {
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+/* TELA INICIAL */
+#start {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #002654, #ffffff, #ed2939);
+  border-radius: 24px;
+  padding: 40px 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#start h1 {
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+#start p {
+  font-size: 24px;
+}
+
+#start button {
+  margin-top: 30px;
+  width: 100%;
+  padding: 22px;
+  font-size: 26px;
+  border-radius: 20px;
+  border: none;
+  background: #1e90ff;
+  color: white;
+  font-weight: bold;
 }
 </style>
 </head>
 
 <body>
-<div id="app">
 
 <header>Missão França 🇫🇷</header>
 
-<!-- INÍCIO -->
+<div id="app">
+
+<!-- TELA INICIAL -->
 <div id="start">
-  <h1>Bienvenue 🇫🇷</h1>
+  <h1>🇫🇷 Bienvenue</h1>
   <p>Aprenda francês jogando</p>
   <button onclick="startGame()">Iniciar estudo</button>
 </div>
 
 <!-- JOGO -->
-<div id="game" style="display:none;">
+<div id="game" style="display:none;width:100%;height:100%;">
   <div class="card">
-    <button id="listen" onclick="speak()">🔊 Ouvir</button>
+    <button id="listen" onclick="speak()">🔊 Ouvir pronúncia</button>
+
     <div id="question"></div>
 
-    <button class="option" id="a0" onclick="answer(0)"></button>
-    <button class="option" id="a1" onclick="answer(1)"></button>
-    <button class="option" id="a2" onclick="answer(2)"></button>
+    <div>
+      <button class="option" id="a0" onclick="answer(0)"></button>
+      <button class="option" id="a1" onclick="answer(1)"></button>
+      <button class="option" id="a2" onclick="answer(2)"></button>
+    </div>
 
-    <p style="margin-top:15px;font-size:18px;">
+    <div id="scoreBox">
       Acertos: <span id="score">0</span>
-    </p>
+    </div>
   </div>
 </div>
 
@@ -163,7 +177,8 @@ button.option.wrong {
 const questions = [
   { fr: "Bonjour", answers: ["Olá", "Obrigado", "Tchau"], correct: 0 },
   { fr: "Merci", answers: ["Por favor", "Obrigado", "Desculpa"], correct: 1 },
-  { fr: "Au revoir", answers: ["Olá", "Até logo", "Boa noite"], correct: 1 }
+  { fr: "Au revoir", answers: ["Olá", "Até logo", "Boa noite"], correct: 1 },
+  { fr: "S’il vous plaît", answers: ["Por favor", "Desculpa", "Obrigado"], correct: 0 }
 ];
 
 let current = 0;
