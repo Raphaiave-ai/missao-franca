@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Missão França 🇫🇷</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #002395, #ffffff, #ed2939);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 500px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    margin-top: 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+h1 {
+    text-align: center;
+}
+
+.question {
+    font-size: 18px;
+    margin: 20px 0;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    background: #002395;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #001a6b;
+}
+
+#status {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+#xp {
+    text-align: center;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🎮 Missão França 🇫🇷</h1>
+
+    <div class="question" id="question"></div>
+
+    <div id="answers"></div>
+
+    <div id="status"></div>
+    <div id="xp">XP: 0</div>
+</div>
+
+<script>
+let xp = 0;
+let fase = 0;
+
+const fases = [
+    {
+        pergunta: "Alguém diz: \"Bonjour\"<br><br>O que você responde?",
+        respostas: [
+            { texto: "Merci", correta: false },
+            { texto: "Bonjour", correta: true },
+            { texto: "Au revoir", correta: false }
+        ]
+    },
+    {
+        pergunta: "Complete a frase:<br><br>Je m'appelle ____",
+        respostas: [
+            { texto: "Bonjour", correta: false },
+            { texto: "Marie", correta: true },
+            { texto: "Merci", correta: false }
+        ]
+    },
+    {
+        pergunta: "Como dizer:<br><br>\"Oi, meu nome é Raphael\"",
+        respostas: [
+            { texto: "Salut, je m'appelle Raphael", correta: true },
+            { texto: "Merci, Raphael", correta: false },
+            { texto: "Au revoir, Raphael", correta: false }
+        ]
+    }
+];
+
+function carregarFase() {
+    if (fase >= fases.length) {
+        document.getElementById("question").innerHTML = "🎉 Parabéns! Você completou o nível iniciante!";
+        document.getElementById("answers").innerHTML = "";
+        document.getElementById("status").innerHTML = "XP Final: " + xp;
+        return;
+    }
+
+    document.getElementById("question").innerHTML = fases[fase].pergunta;
+    document.getElementById("answers").innerHTML = "";
+    document.getElementById("status").innerHTML = "";
+
+    fases[fase].respostas.forEach(resposta => {
+        const btn = document.createElement("button");
+        btn.textContent = resposta.texto;
+        btn.onclick = () => verificarResposta(resposta.correta);
+        document.getElementById("answers").appendChild(btn);
+    });
+}
+
+function verificarResposta(correta) {
+    if (correta) {
+        xp += 10;
+        document.getElementById("status").innerHTML = "✅ Correto! +10 XP";
+        fase++;
+    } else {
+        xp -= 2;
+        document.getElementById("status").innerHTML = "❌ Errado! -2 XP";
+    }
+    document.getElementById("xp").innerHTML = "XP: " + xp;
+    setTimeout(carregarFase, 1000);
+}
+
+carregarFase();
+</script>
+
+</body>
+</html>
