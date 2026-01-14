@@ -3,90 +3,110 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Missão Idiomas 🌍</title>
+<title>Missão Idiomas</title>
 
 <style>
 *{box-sizing:border-box}
 html,body{
-  margin:0;width:100%;height:100%;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f2f2f2
+  margin:0;height:100%;width:100%;
+  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial;
+  background:#eef1f5
 }
 header{
-  background:#0b1f3a;
-  color:white;
+  background:linear-gradient(90deg,#0b1f3a,#002654);
+  color:#fff;
   text-align:center;
-  padding:22px;
+  padding:18px;
   font-size:26px;
-  font-weight:bold
+  font-weight:700
 }
 #app{
-  height:calc(100% - 80px);
+  height:calc(100% - 70px);
   display:flex;
   justify-content:center;
   align-items:center;
-  padding:12px
+  padding:14px
 }
 .card{
   width:100%;
-  height:100%;
   max-width:520px;
+  height:100%;
   max-height:760px;
-  background:white;
+  background:#fff;
   border-radius:26px;
   padding:22px;
-  box-shadow:0 15px 40px rgba(0,0,0,.2);
   display:flex;
   flex-direction:column;
-  justify-content:space-between
+  justify-content:space-between;
+  box-shadow:0 25px 60px rgba(0,0,0,.25)
 }
+h1{margin:10px 0}
 #question{
-  font-size:30px;
-  font-weight:bold;
-  margin:20px 0;
-  text-align:center
+  font-size:28px;
+  font-weight:700;
+  text-align:center;
+  margin:18px 0
 }
 .option{
   width:100%;
-  padding:18px;
-  margin-bottom:12px;
-  font-size:22px;
-  border-radius:18px;
+  padding:16px;
+  margin-bottom:10px;
+  font-size:20px;
+  border-radius:16px;
   border:none;
-  background:#2196f3;
+  background:linear-gradient(135deg,#1e90ff,#42a5f5);
   color:white;
-  transition:.3s
+  transition:.25s
 }
-.correct{background:#4caf50!important;transform:scale(1.03)}
-.wrong{background:#f44336!important}
+.option:active{transform:scale(.96)}
+.correct{background:linear-gradient(135deg,#43a047,#66bb6a)!important}
+.wrong{
+  background:linear-gradient(135deg,#e53935,#ef5350)!important;
+  animation:shake .3s
+}
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)}
+  75%{transform:translateX(-6px)}
+  100%{transform:translateX(0)}
+}
 #listen{
-  background:#ff5252;
+  background:linear-gradient(135deg,#ff5252,#ff1744);
   color:white;
-  font-size:20px;
   padding:14px;
-  border-radius:18px;
-  border:none
+  border-radius:16px;
+  border:none;
+  font-size:18px
 }
-#scoreBox{
-  font-size:20px;
-  text-align:center;
-  margin-top:10px
+.progress{
+  width:100%;
+  height:10px;
+  background:#ddd;
+  border-radius:6px;
+  overflow:hidden;
+  margin:10px 0
+}
+.progress div{
+  height:100%;
+  width:0%;
+  background:#4caf50;
+  transition:.3s
 }
 .big{
   width:100%;
   padding:22px;
   font-size:26px;
-  border-radius:20px;
+  border-radius:22px;
   border:none;
-  font-weight:bold;
-  margin-top:18px
+  font-weight:700;
+  margin-top:14px
 }
 .en{background:#1e90ff;color:white}
-.fr{background:#0b1f3a;color:white}
-#start,#nextLevel{
+.fr{background:#002654;color:white}
+#start,#next{
   width:100%;
   height:100%;
-  border-radius:26px;
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -94,10 +114,8 @@ header{
   text-align:center
 }
 #start{
-  background:linear-gradient(135deg,#002654,#fff,#ed2939);
-  animation:fade 1.2s
+  background:linear-gradient(135deg,#002654,#ffffff,#ed2939)
 }
-@keyframes fade{from{opacity:0}to{opacity:1}}
 .confetti{
   position:fixed;
   width:10px;
@@ -117,137 +135,213 @@ header{
 <div id="app">
 
 <div id="start">
-  <h1 style="font-size:40px">🎮 Missão Idiomas</h1>
-  <button class="big en" onclick="selectLang('en')">🇬🇧 Jogar e aprender Inglês</button>
-  <button class="big fr" onclick="selectLang('fr')">🇫🇷 Jogar e aprender Francês</button>
+  <h1 style="font-size:44px">🎮 Missão Idiomas</h1>
+  <p style="font-size:22px">Aprenda jogando</p>
+  <button class="big en" onclick="startGame('en')">🇬🇧 Inglês</button>
+  <button class="big fr" onclick="startGame('fr')">🇫🇷 Francês</button>
 </div>
 
 <div id="game" style="display:none;width:100%;height:100%">
   <div class="card">
     <button id="listen" onclick="speak()">🔊 Ouvir pronúncia</button>
+
+    <div class="progress"><div id="bar"></div></div>
+
     <div id="question"></div>
 
-    <button class="option" id="a0" onclick="answer(0)"></button>
-    <button class="option" id="a1" onclick="answer(1)"></button>
-    <button class="option" id="a2" onclick="answer(2)"></button>
+    <button class="option" id="o0" onclick="answer(0)"></button>
+    <button class="option" id="o1" onclick="answer(1)"></button>
+    <button class="option" id="o2" onclick="answer(2)"></button>
+    <button class="option" id="o3" onclick="answer(3)"></button>
 
-    <div id="scoreBox">
-      Acertos: <span id="score">0</span>/25
-      <div id="achieve"></div>
+    <div style="text-align:center;font-size:18px">
+      Acertos: <span id="score">0</span>/20
     </div>
   </div>
 </div>
 
-<div id="nextLevel" style="display:none">
+<div id="next" style="display:none">
   <h1>🎉 Parabéns!</h1>
-  <p id="nextMsg"></p>
-  <button class="big fr" onclick="startLevel2()">Iniciar Nível 2</button>
+  <p id="msg"></p>
+  <button class="big fr" onclick="nextLevel()">Iniciar próximo nível</button>
 </div>
 
 </div>
 
 <script>
 const sounds={
-  ok:new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg"),
-  err:new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg")
+ ok:new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg"),
+ err:new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg")
 };
 
-let lang="",level=1,current=0,score=0,questions=[],correctIndex=0;
+let lang="",level=1,current=0,score=0,questions=[],correct=0;
 
 const data={
-fr:{
-voice:"fr-FR",
-l1:[
-{q:"Bonjour",a:["Olá","Obrigado","Tchau"],c:0},
-{q:"Merci",a:["Obrigado","Por favor","Desculpa"],c:0},
-{q:"Au revoir",a:["Até logo","Bom dia","Boa noite"],c:0},
-{q:"Je suis perdu",a:["Estou perdido","Estou cansado","Estou bem"],c:0},
-{q:"Où est la salle de bain ?",a:["Onde fica o banheiro?","Onde é o hotel?","Quanto custa?"],c:0},
-// (restante até 25 pode ser expandido depois)
-],
-l2:[
-{q:"Je voudrais réserver une chambre",a:["Gostaria de reservar um quarto","Quero água","Estou perdido"],c:0}
-]
-},
-en:{
-voice:"en-US",
-l1:[
-{q:"Hello",a:["Olá","Obrigado","Tchau"],c:0},
-{q:"Thank you",a:["Obrigado","Por favor","Desculpa"],c:0},
-{q:"Goodbye",a:["Até logo","Bom dia","Boa noite"],c:0},
-{q:"I am lost",a:["Estou perdido","Estou cansado","Estou bem"],c:0},
-{q:"Where is the bathroom?",a:["Onde fica o banheiro?","Onde é o hotel?","Quanto custa?"],c:0}
-],
-l2:[
-{q:"I would like to book a room",a:["Gostaria de reservar um quarto","Quero água","Estou perdido"],c:0}
-]
-}
+ en:{
+  voice:"en-US",
+  levels:[
+   /* NÍVEL 1 */
+   [
+    {q:"Hello",a:["Olá","Obrigado","Tchau","Por favor"],c:0},
+    {q:"Good morning",a:["Bom dia","Boa noite","Boa tarde","Olá"],c:0},
+    {q:"Good night",a:["Boa noite","Bom dia","Boa tarde","Olá"],c:0},
+    {q:"Thank you",a:["Obrigado","Por favor","Oi","Tchau"],c:0},
+    {q:"Please",a:["Por favor","Obrigado","Oi","Tchau"],c:0},
+    {q:"I am tired",a:["Estou cansado","Estou feliz","Estou com fome","Estou bem"],c:0},
+    {q:"I am hungry",a:["Estou com fome","Estou cansado","Estou feliz","Estou bem"],c:0},
+    {q:"Where is the bathroom?",a:["Onde fica o banheiro?","Onde é o hotel?","Quanto custa?","Que horas são?"],c:0},
+    {q:"How much is this?",a:["Quanto custa isso?","Onde fica?","Que horas são?","Posso ajudar?"],c:0},
+    {q:"Excuse me",a:["Com licença","Obrigado","Por favor","Oi"],c:0},
+    {q:"I don’t understand",a:["Não entendo","Entendi","Talvez","Estou bem"],c:0},
+    {q:"I understand",a:["Eu entendo","Eu esqueço","Talvez","Eu preciso"],c:0},
+    {q:"Goodbye",a:["Até logo","Bom dia","Boa noite","Olá"],c:0},
+    {q:"Welcome",a:["Bem-vindo","Boa noite","Até logo","Olá"],c:0},
+    {q:"Good luck",a:["Boa sorte","Boa viagem","Boa noite","Olá"],c:0},
+    {q:"No problem",a:["Sem problema","Com problema","Talvez","Nunca"],c:0},
+    {q:"All right",a:["Tudo bem","Talvez","Não","Nunca"],c:0},
+    {q:"What time is it?",a:["Que horas são?","Onde fica?","Quanto custa?","Posso ajudar?"],c:0},
+    {q:"I am lost",a:["Estou perdido","Estou bem","Estou feliz","Estou cansado"],c:0},
+    {q:"See you later",a:["Até mais","Bom dia","Boa noite","Olá"],c:0}
+   ],
+   /* NÍVEL 2 */
+   [
+    {q:"I need help",a:["Eu preciso de ajuda","Eu estou perdido","Eu entendo","Eu gosto"],c:0},
+    {q:"Can you help me?",a:["Você pode me ajudar?","Onde fica?","Quanto custa?","Que horas são?"],c:0},
+    {q:"I like this place",a:["Eu gosto deste lugar","Eu não entendo","Eu estou cansado","Eu preciso sair"],c:0},
+    {q:"I don’t like this",a:["Eu não gosto disso","Eu gosto disso","Talvez","Nunca"],c:0},
+    {q:"I am looking for a hotel",a:["Estou procurando um hotel","Estou cansado","Estou com fome","Estou bem"],c:0},
+    {q:"How can I get there?",a:["Como posso chegar lá?","Quanto custa?","Que horas são?","Onde fica?"],c:0},
+    {q:"I want to eat",a:["Eu quero comer","Eu quero dormir","Eu quero sair","Eu quero trabalhar"],c:0},
+    {q:"I want to drink water",a:["Eu quero beber água","Eu quero comer","Eu quero sair","Eu quero dormir"],c:0},
+    {q:"What do you recommend?",a:["O que você recomenda?","Onde fica?","Quanto custa?","Que horas são?"],c:0},
+    {q:"I am very happy",a:["Estou muito feliz","Estou cansado","Estou triste","Estou doente"],c:0},
+    {q:"I am sad",a:["Estou triste","Estou feliz","Estou cansado","Estou bem"],c:0},
+    {q:"I am sick",a:["Estou doente","Estou bem","Estou feliz","Estou cansado"],c:0},
+    {q:"Can I pay by card?",a:["Posso pagar com cartão?","Onde fica?","Quanto custa?","Que horas são?"],c:0},
+    {q:"I need a taxi",a:["Eu preciso de um táxi","Eu preciso de ajuda","Eu preciso comer","Eu preciso dormir"],c:0},
+    {q:"I am waiting for you",a:["Estou esperando por você","Estou perdido","Estou feliz","Estou cansado"],c:0},
+    {q:"See you tomorrow",a:["Até amanhã","Até logo","Boa noite","Bom dia"],c:0},
+    {q:"Have a nice day",a:["Tenha um bom dia","Boa noite","Até logo","Boa viagem"],c:0},
+    {q:"I agree",a:["Eu concordo","Eu discordo","Talvez","Nunca"],c:0},
+    {q:"I don’t agree",a:["Eu não concordo","Eu concordo","Talvez","Nunca"],c:0},
+    {q:"That’s perfect",a:["Isso é perfeito","Isso é ruim","Talvez","Nunca"],c:0}
+   ],
+   /* NÍVEL 3 – CONVERSAÇÃO */
+   [
+    {q:"Can you speak more slowly, please?",a:["Você pode falar mais devagar, por favor?","Onde fica?","Quanto custa?","Que horas são?"],c:0},
+    {q:"I am learning English",a:["Estou aprendendo inglês","Eu falo inglês","Eu esqueço inglês","Eu odeio inglês"],c:0},
+    {q:"I would like to order food",a:["Eu gostaria de pedir comida","Eu quero pagar","Eu quero sair","Eu quero dormir"],c:0},
+    {q:"Could you repeat that?",a:["Você pode repetir isso?","Onde fica?","Quanto custa?","Que horas são?"],c:0},
+    {q:"I don’t speak English very well",a:["Eu não falo inglês muito bem","Eu falo inglês perfeitamente","Eu não gosto de inglês","Eu esqueço inglês"],c:0},
+    {q:"I am here on vacation",a:["Estou aqui de férias","Estou aqui a trabalho","Estou perdido","Estou cansado"],c:0},
+    {q:"How long will it take?",a:["Quanto tempo vai levar?","Quanto custa?","Onde fica?","Que horas são?"],c:0},
+    {q:"What do you do for work?",a:["O que você faz no trabalho?","Onde você mora?","Que horas são?","Quanto custa?"],c:0},
+    {q:"I live in Brazil",a:["Eu moro no Brasil","Eu moro aqui","Eu moro longe","Eu moro perto"],c:0},
+    {q:"Nice to meet you",a:["Prazer em conhecer você","Até logo","Boa noite","Bom dia"],c:0},
+    {q:"Where are you from?",a:["De onde você é?","Onde você mora?","Que horas são?","Quanto custa?"],c:0},
+    {q:"I am enjoying my trip",a:["Estou aproveitando minha viagem","Estou cansado","Estou triste","Estou doente"],c:0},
+    {q:"Can we talk later?",a:["Podemos conversar mais tarde?","Onde fica?","Quanto custa?","Que horas são?"],c:0},
+    {q:"I need to practice more",a:["Eu preciso praticar mais","Eu sei tudo","Eu não preciso estudar","Eu desisto"],c:0},
+    {q:"I feel confident now",a:["Eu me sinto confiante agora","Eu estou nervoso","Eu estou perdido","Eu estou cansado"],c:0},
+    {q:"Thank you for your help",a:["Obrigado pela sua ajuda","Até logo","Boa noite","Bom dia"],c:0},
+    {q:"That sounds good",a:["Isso parece bom","Isso é ruim","Talvez","Nunca"],c:0},
+    {q:"I will come back soon",a:["Eu vou voltar em breve","Eu vou embora","Eu fico aqui","Eu não sei"],c:0},
+    {q:"Let’s keep in touch",a:["Vamos manter contato","Até logo","Boa noite","Bom dia"],c:0},
+    {q:"See you next time",a:["Até a próxima","Até logo","Boa noite","Bom dia"],c:0}
+   ]
+  ]
+ }
 };
 
-function selectLang(l){
-  lang=l;level=1;current=0;score=0;
-  questions=data[lang].l1;
-  document.getElementById("start").style.display="none";
-  document.getElementById("game").style.display="block";
-  load();
-}
+// FRANCÊS (estrutura idêntica)
+data.fr = JSON.parse(JSON.stringify(data.en));
+data.fr.voice="fr-FR";
+data.fr.levels[0].forEach(q=>q.q = ({
+ "Hello":"Bonjour",
+ "Good morning":"Bonjour",
+ "Good night":"Bonne nuit",
+ "Thank you":"Merci",
+ "Please":"S’il vous plaît",
+ "I am tired":"Je suis fatigué",
+ "I am hungry":"J’ai faim",
+ "Where is the bathroom?":"Où est la salle de bain ?",
+ "How much is this?":"Combien ça coûte ?",
+ "Excuse me":"Excusez-moi",
+ "I don’t understand":"Je ne comprends pas",
+ "I understand":"Je comprends",
+ "Goodbye":"Au revoir",
+ "Welcome":"Bienvenue",
+ "Good luck":"Bonne chance",
+ "No problem":"Pas de problème",
+ "All right":"D’accord",
+ "What time is it?":"Quelle heure est-il ?",
+ "I am lost":"Je suis perdu",
+ "See you later":"À plus tard"
+}[q.q] || q.q));
 
+let lang="",level=1,current=0,score=0,questions=[],correct=0;
+
+function startGame(l){
+ lang=l;level=1;current=0;score=0;
+ questions=data[lang].levels[0];
+ document.getElementById("start").style.display="none";
+ document.getElementById("game").style.display="block";
+ load();
+}
 function load(){
-  const q=questions[current];
-  document.getElementById("question").innerText=q.q;
-  const opts=[...q.a.map((t,i)=>({t,i}))].sort(()=>Math.random()-0.5);
-  correctIndex=opts.findIndex(o=>o.i===q.c);
-  opts.forEach((o,i)=>{
-    const b=document.getElementById("a"+i);
-    b.innerText=o.t;
-    b.className="option";
-  });
-  document.getElementById("score").innerText=score;
+ let q=questions[current];
+ document.getElementById("question").innerText=q.q;
+ let opts=q.a.map((t,i)=>({t,i})).sort(()=>Math.random()-0.5);
+ correct=opts.findIndex(o=>o.i===q.c);
+ opts.forEach((o,i)=>{
+  let b=document.getElementById("o"+i);
+  b.innerText=o.t;
+  b.className="option";
+ });
+ document.getElementById("score").innerText=score;
+ document.getElementById("bar").style.width=((current)/20*100)+"%";
 }
-
 function answer(i){
-  const ok=i===correctIndex;
-  sounds[ok?"ok":"err"].play();
-  if(navigator.vibrate) navigator.vibrate(ok?100:300);
-  document.getElementById("a"+i).classList.add(ok?"correct":"wrong");
-  if(ok) score++;
-  setTimeout(()=>{
-    current++;
-    current<questions.length?load():finish();
-  },600);
+ let ok=i===correct;
+ sounds[ok?"ok":"err"].play();
+ if(navigator.vibrate) navigator.vibrate(ok?80:250);
+ document.getElementById("o"+i).classList.add(ok?"correct":"wrong");
+ if(ok) score++;
+ setTimeout(()=>{
+  current++;
+  current<questions.length?load():finish();
+ },600);
 }
-
 function finish(){
-  document.getElementById("game").style.display="none";
-  document.getElementById("nextLevel").style.display="flex";
-  document.getElementById("nextMsg").innerText=
-    score>=15?"Você desbloqueou o nível 2!":"Você precisa de 15 acertos para avançar";
-  if(score>=15) confetti();
+ document.getElementById("game").style.display="none";
+ document.getElementById("next").style.display="flex";
+ document.getElementById("msg").innerText=
+  score>=12?"Você desbloqueou o próximo nível!":"Você precisa de 12 acertos para avançar.";
+ if(score>=12) confetti();
 }
-
-function startLevel2(){
-  level=2;current=0;score=0;
-  questions=data[lang].l2;
-  document.getElementById("nextLevel").style.display="none";
-  document.getElementById("game").style.display="block";
-  load();
+function nextLevel(){
+ level++;
+ if(level>3){location.reload();return}
+ score=0;current=0;
+ questions=data[lang].levels[level-1];
+ document.getElementById("next").style.display="none";
+ document.getElementById("game").style.display="block";
+ load();
 }
-
 function speak(){
-  const u=new SpeechSynthesisUtterance(questions[current].q);
-  u.lang=data[lang].voice;
-  speechSynthesis.speak(u);
+ let u=new SpeechSynthesisUtterance(questions[current].q);
+ u.lang=data[lang].voice;
+ speechSynthesis.speak(u);
 }
-
 function confetti(){
-  for(let i=0;i<80;i++){
-    const c=document.createElement("div");
-    c.className="confetti";
-    c.style.left=Math.random()*100+"%";
-    c.style.background=`hsl(${Math.random()*360},100%,50%)`;
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3000);
-  }
+ for(let i=0;i<120;i++){
+  let c=document.createElement("div");
+  c.className="confetti";
+  c.style.left=Math.random()*100+"%";
+  c.style.background=`hsl(${Math.random()*360},100%,50%)`;
+  document.body.appendChild(c);
+  setTimeout(()=>c.remove(),3000);
+ }
 }
 </script>
 
