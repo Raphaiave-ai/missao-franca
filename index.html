@@ -9,21 +9,26 @@
   box-sizing: border-box;
 }
 
-body {
+html, body {
+  width: 100%;
+  height: 100%;
   margin: 0;
-  min-height: 100vh;
   font-family: Arial, sans-serif;
   background: #f2f2f2;
+}
+
+/* CENTRALIZA TUDO */
+body {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* APP CENTRAL */
+/* APP */
 #app {
   width: 100%;
-  max-width: 420px;
-  padding: 15px;
+  max-width: 480px;   /* 🔥 maior */
+  padding: 16px;
 }
 
 /* TOPO */
@@ -31,37 +36,37 @@ header {
   background: #0b1f3a;
   color: white;
   text-align: center;
-  padding: 20px;
-  font-size: 26px;
+  padding: 18px;
+  font-size: 24px;
   font-weight: bold;
-  border-radius: 14px;
+  border-radius: 16px;
   margin-bottom: 15px;
 }
 
 /* TELA INICIAL */
 #start {
   background: linear-gradient(135deg, #002654, #ffffff, #ed2939);
-  padding: 35px 20px;
-  border-radius: 16px;
+  border-radius: 20px;
+  padding: 40px 25px;
   text-align: center;
-  animation: fade 1.2s ease;
+  animation: fade 1s ease;
 }
 
 #start h1 {
-  font-size: 36px;
+  font-size: 38px;
   margin-bottom: 10px;
 }
 
 #start p {
-  font-size: 20px;
+  font-size: 22px;
 }
 
 #start button {
-  margin-top: 25px;
-  padding: 18px;
+  margin-top: 30px;
+  padding: 20px;
   width: 100%;
-  font-size: 22px;
-  border-radius: 14px;
+  font-size: 24px;
+  border-radius: 16px;
   border: none;
   background: #1e90ff;
   color: white;
@@ -71,20 +76,38 @@ header {
 /* CARD JOGO */
 .card {
   background: white;
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 20px;
+  padding: 25px;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-  animation: fade 0.6s ease;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+  animation: fade 0.5s ease;
 }
 
-/* BOTÕES */
+/* BOTÃO OUVIR */
+#listen {
+  background: #ff5252;
+  color: white;
+  font-size: 20px;
+  padding: 16px;
+  width: 100%;
+  border-radius: 14px;
+  border: none;
+  margin-bottom: 15px;
+}
+
+/* FRASE */
+#question {
+  font-size: 26px;
+  margin-bottom: 15px;
+}
+
+/* OPÇÕES */
 button.option {
   width: 100%;
-  padding: 14px;
-  margin-top: 10px;
-  font-size: 18px;
-  border-radius: 12px;
+  padding: 18px;
+  margin-top: 12px;
+  font-size: 20px;
+  border-radius: 14px;
   border: none;
   background: #2196f3;
   color: white;
@@ -96,11 +119,6 @@ button.option.correct {
 
 button.option.wrong {
   background: #f44336;
-}
-
-#listen {
-  background: #ff5252;
-  margin-bottom: 15px;
 }
 
 /* ANIMAÇÃO */
@@ -116,7 +134,7 @@ button.option.wrong {
 
 <header>Missão França 🇫🇷</header>
 
-<!-- TELA INICIAL -->
+<!-- INÍCIO -->
 <div id="start">
   <h1>Bienvenue 🇫🇷</h1>
   <p>Aprenda francês jogando</p>
@@ -126,14 +144,14 @@ button.option.wrong {
 <!-- JOGO -->
 <div id="game" style="display:none;">
   <div class="card">
-    <button id="listen" class="option" onclick="speak()">🔊 Ouvir</button>
-    <h3 id="question"></h3>
+    <button id="listen" onclick="speak()">🔊 Ouvir</button>
+    <div id="question"></div>
 
-    <button class="option" onclick="answer(0)" id="a0"></button>
-    <button class="option" onclick="answer(1)" id="a1"></button>
-    <button class="option" onclick="answer(2)" id="a2"></button>
+    <button class="option" id="a0" onclick="answer(0)"></button>
+    <button class="option" id="a1" onclick="answer(1)"></button>
+    <button class="option" id="a2" onclick="answer(2)"></button>
 
-    <p style="margin-top:15px;">
+    <p style="margin-top:15px;font-size:18px;">
       Acertos: <span id="score">0</span>
     </p>
   </div>
@@ -143,21 +161,9 @@ button.option.wrong {
 
 <script>
 const questions = [
-  {
-    fr: "Bonjour",
-    answers: ["Olá", "Obrigado", "Tchau"],
-    correct: 0
-  },
-  {
-    fr: "Merci",
-    answers: ["Por favor", "Obrigado", "Desculpa"],
-    correct: 1
-  },
-  {
-    fr: "Au revoir",
-    answers: ["Olá", "Até logo", "Boa noite"],
-    correct: 1
-  }
+  { fr: "Bonjour", answers: ["Olá", "Obrigado", "Tchau"], correct: 0 },
+  { fr: "Merci", answers: ["Por favor", "Obrigado", "Desculpa"], correct: 1 },
+  { fr: "Au revoir", answers: ["Olá", "Até logo", "Boa noite"], correct: 1 }
 ];
 
 let current = 0;
@@ -194,16 +200,14 @@ function answer(i) {
   setTimeout(()=>{
     current = (current + 1) % questions.length;
     loadQuestion();
-  }, 800);
+  }, 700);
 }
 
 function speak() {
-  const utter = new SpeechSynthesisUtterance(
-    questions[current].fr
-  );
-  utter.lang = "fr-FR";
-  utter.rate = 0.9;
-  speechSynthesis.speak(utter);
+  const u = new SpeechSynthesisUtterance(questions[current].fr);
+  u.lang = "fr-FR";
+  u.rate = 0.9;
+  speechSynthesis.speak(u);
 }
 </script>
 
