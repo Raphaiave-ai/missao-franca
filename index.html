@@ -43,12 +43,12 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  opacity: 0.9;
+.listen {
+  background: #EF4135;
 }
 
 .info {
-  margin-top: 10px;
+  margin-top: 8px;
   font-weight: bold;
 }
 </style>
@@ -61,6 +61,8 @@ button:hover {
 
   <p id="pergunta"></p>
 
+  <button class="listen" onclick="ouvirPronuncia()">🔊 Ouvir pronúncia</button>
+
   <button onclick="responder(0)" id="btn0"></button>
   <button onclick="responder(1)" id="btn1"></button>
   <button onclick="responder(2)" id="btn2"></button>
@@ -71,24 +73,19 @@ button:hover {
 
 <script>
 const perguntas = [
-  {
-    pergunta: 'Alguém diz: "Bonjour"',
-    respostas: ['Bonjour', 'Merci', 'Au revoir'],
-    correta: 0,
-    audio: 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=fr&q=Bonjour'
-  },
-  {
-    pergunta: 'Alguém diz: "Merci"',
-    respostas: ['Bonsoir', 'Merci', 'De rien'],
-    correta: 2,
-    audio: 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=fr&q=De+rien'
-  },
-  {
-    pergunta: 'Alguém diz: "Au revoir"',
-    respostas: ['Bonjour', 'À bientôt', 'Merci'],
-    correta: 1,
-    audio: 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=fr&q=A+bientôt'
-  }
+  { pergunta: 'Alguém diz: "Bonjour"', respostas: ['Bonjour', 'Merci', 'Au revoir'], correta: 0, fala: 'Bonjour' },
+  { pergunta: 'Alguém diz: "Merci"', respostas: ['Bonsoir', 'Merci', 'De rien'], correta: 2, fala: 'De rien' },
+  { pergunta: 'Como dizer "Boa noite"?', respostas: ['Bonjour', 'Bonsoir', 'Merci'], correta: 1, fala: 'Bonsoir' },
+  { pergunta: 'Como dizer "Tchau"?', respostas: ['Au revoir', 'Merci', 'Bonjour'], correta: 0, fala: 'Au revoir' },
+  { pergunta: 'Como dizer "Até logo"?', respostas: ['À bientôt', 'Bonsoir', 'Pardon'], correta: 0, fala: 'À bientôt' },
+  { pergunta: 'Como dizer "Por favor"?', respostas: ['Merci', 'S’il vous plaît', 'Bonjour'], correta: 1, fala: 'S’il vous plaît' },
+  { pergunta: 'Como dizer "Desculpa"?', respostas: ['Pardon', 'Merci', 'Bonsoir'], correta: 0, fala: 'Pardon' },
+  { pergunta: 'Como dizer "Sim"?', respostas: ['Non', 'Oui', 'Merci'], correta: 1, fala: 'Oui' },
+  { pergunta: 'Como dizer "Não"?', respostas: ['Oui', 'Bonsoir', 'Non'], correta: 2, fala: 'Non' },
+  { pergunta: 'Como dizer "Tudo bem?"', respostas: ['Ça va ?', 'Merci', 'Bonjour'], correta: 0, fala: 'Ça va ?' },
+  { pergunta: 'Resposta para "Ça va ?"', respostas: ['Ça va bien', 'Au revoir', 'Pardon'], correta: 0, fala: 'Ça va bien' },
+  { pergunta: 'Como agradecer formalmente?', respostas: ['Salut', 'Merci beaucoup', 'Bonsoir'], correta: 1, fala: 'Merci beaucoup' },
+  { pergunta: 'Como dizer "Com licença"?', respostas: ['Excusez-moi', 'Bonjour', 'Merci'], correta: 0, fala: 'Excusez-moi' }
 ];
 
 let estado = JSON.parse(localStorage.getItem("missaoFranca")) || {
@@ -97,39 +94,46 @@ let estado = JSON.parse(localStorage.getItem("missaoFranca")) || {
   perguntaAtual: 0
 };
 
-const audio = new Audio();
+let vozFeminina = null;
+
+function carregarVoz() {
+  const vozes = speechSynthesis.getVoices();
+  vozFeminina = vozes.find(v => v.lang === 'fr-FR' && v.name.toLowerCase().includes('female'))
+             || vozes.find(v => v.lang === 'fr-FR');
+}
+
+speechSynthesis.onvoiceschanged = carregarVoz;
+
+function ouvirPronuncia() {
+  const texto = perguntas[estado.perguntaAtual].fala;
+  const fala = new SpeechSynthesisUtterance(texto);
+  fala.lang = 'fr-FR';
+  fala.rate = 0.9;
+  if (vozFeminina) fala.voice = vozFeminina;
+  speechSynthesis.speak(fala);
+}
 
 function carregarPergunta() {
   const p = perguntas[estado.perguntaAtual];
-
   document.getElementById("pergunta").innerText = p.pergunta;
   document.getElementById("btn0").innerText = p.respostas[0];
   document.getElementById("btn1").innerText = p.respostas[1];
   document.getElementById("btn2").innerText = p.respostas[2];
-
   document.getElementById("xp").innerText = "XP: " + estado.xp;
   document.getElementById("nivel").innerText = "Nível: " + estado.nivel;
-
-  audio.src = p.audio;
-  audio.play();
 }
 
 function responder(opcao) {
   const p = perguntas[estado.perguntaAtual];
+  ouvirPronuncia();
 
   if (opcao === p.correta) {
     estado.xp += 10;
-
     if (estado.xp % 30 === 0) {
       estado.nivel++;
       alert("🎉 Subiu de nível!");
     }
-
-    estado.perguntaAtual++;
-    if (estado.perguntaAtual >= perguntas.length) {
-      estado.perguntaAtual = 0;
-    }
-
+    estado.perguntaAtual = (estado.perguntaAtual + 1) % perguntas.length;
   } else {
     alert("❌ Resposta errada");
   }
