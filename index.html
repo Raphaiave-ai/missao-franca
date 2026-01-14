@@ -2,141 +2,143 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Missão França 🇫🇷</title>
+
 <style>
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #002395, #ffffff, #ed2939);
-    margin: 0;
-    padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0055A4, #ffffff, #EF4135);
+  font-family: Arial, sans-serif;
 }
 
-.container {
-    max-width: 500px;
-    margin: auto;
-    background: white;
-    padding: 20px;
-    margin-top: 40px;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-}
-
-h1 {
-    text-align: center;
-}
-
-.question {
-    font-size: 18px;
-    margin: 20px 0;
+.game-container {
+  background: white;
+  width: 90%;
+  max-width: 420px;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  text-align: center;
 }
 
 button {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    background: #002395;
-    color: white;
-    cursor: pointer;
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  background: #0055A4;
+  color: white;
+  cursor: pointer;
 }
 
 button:hover {
-    background: #001a6b;
+  opacity: 0.9;
 }
 
-#status {
-    text-align: center;
-    margin-top: 15px;
-    font-weight: bold;
-}
-
-#xp {
-    text-align: center;
-    margin-top: 10px;
+.info {
+  margin-top: 10px;
+  font-weight: bold;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1>🎮 Missão França 🇫🇷</h1>
+<div class="game-container">
+  <h2>🎮 Missão França 🇫🇷</h2>
 
-    <div class="question" id="question"></div>
+  <p id="pergunta"></p>
 
-    <div id="answers"></div>
+  <button onclick="responder(0)" id="btn0"></button>
+  <button onclick="responder(1)" id="btn1"></button>
+  <button onclick="responder(2)" id="btn2"></button>
 
-    <div id="status"></div>
-    <div id="xp">XP: 0</div>
+  <div class="info" id="xp"></div>
+  <div class="info" id="nivel"></div>
 </div>
 
 <script>
-let xp = 0;
-let fase = 0;
-
-const fases = [
-    {
-        pergunta: "Alguém diz: \"Bonjour\"<br><br>O que você responde?",
-        respostas: [
-            { texto: "Merci", correta: false },
-            { texto: "Bonjour", correta: true },
-            { texto: "Au revoir", correta: false }
-        ]
-    },
-    {
-        pergunta: "Complete a frase:<br><br>Je m'appelle ____",
-        respostas: [
-            { texto: "Bonjour", correta: false },
-            { texto: "Marie", correta: true },
-            { texto: "Merci", correta: false }
-        ]
-    },
-    {
-        pergunta: "Como dizer:<br><br>\"Oi, meu nome é Raphael\"",
-        respostas: [
-            { texto: "Salut, je m'appelle Raphael", correta: true },
-            { texto: "Merci, Raphael", correta: false },
-            { texto: "Au revoir, Raphael", correta: false }
-        ]
-    }
+const perguntas = [
+  {
+    pergunta: 'Alguém diz: "Bonjour"',
+    respostas: ['Bonjour', 'Merci', 'Au revoir'],
+    correta: 0,
+    audio: 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=fr&q=Bonjour'
+  },
+  {
+    pergunta: 'Alguém diz: "Merci"',
+    respostas: ['Bonsoir', 'Merci', 'De rien'],
+    correta: 2,
+    audio: 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=fr&q=De+rien'
+  },
+  {
+    pergunta: 'Alguém diz: "Au revoir"',
+    respostas: ['Bonjour', 'À bientôt', 'Merci'],
+    correta: 1,
+    audio: 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=fr&q=A+bientôt'
+  }
 ];
 
-function carregarFase() {
-    if (fase >= fases.length) {
-        document.getElementById("question").innerHTML = "🎉 Parabéns! Você completou o nível iniciante!";
-        document.getElementById("answers").innerHTML = "";
-        document.getElementById("status").innerHTML = "XP Final: " + xp;
-        return;
-    }
+let estado = JSON.parse(localStorage.getItem("missaoFranca")) || {
+  xp: 0,
+  nivel: 1,
+  perguntaAtual: 0
+};
 
-    document.getElementById("question").innerHTML = fases[fase].pergunta;
-    document.getElementById("answers").innerHTML = "";
-    document.getElementById("status").innerHTML = "";
+const audio = new Audio();
 
-    fases[fase].respostas.forEach(resposta => {
-        const btn = document.createElement("button");
-        btn.textContent = resposta.texto;
-        btn.onclick = () => verificarResposta(resposta.correta);
-        document.getElementById("answers").appendChild(btn);
-    });
+function carregarPergunta() {
+  const p = perguntas[estado.perguntaAtual];
+
+  document.getElementById("pergunta").innerText = p.pergunta;
+  document.getElementById("btn0").innerText = p.respostas[0];
+  document.getElementById("btn1").innerText = p.respostas[1];
+  document.getElementById("btn2").innerText = p.respostas[2];
+
+  document.getElementById("xp").innerText = "XP: " + estado.xp;
+  document.getElementById("nivel").innerText = "Nível: " + estado.nivel;
+
+  audio.src = p.audio;
+  audio.play();
 }
 
-function verificarResposta(correta) {
-    if (correta) {
-        xp += 10;
-        document.getElementById("status").innerHTML = "✅ Correto! +10 XP";
-        fase++;
-    } else {
-        xp -= 2;
-        document.getElementById("status").innerHTML = "❌ Errado! -2 XP";
+function responder(opcao) {
+  const p = perguntas[estado.perguntaAtual];
+
+  if (opcao === p.correta) {
+    estado.xp += 10;
+
+    if (estado.xp % 30 === 0) {
+      estado.nivel++;
+      alert("🎉 Subiu de nível!");
     }
-    document.getElementById("xp").innerHTML = "XP: " + xp;
-    setTimeout(carregarFase, 1000);
+
+    estado.perguntaAtual++;
+    if (estado.perguntaAtual >= perguntas.length) {
+      estado.perguntaAtual = 0;
+    }
+
+  } else {
+    alert("❌ Resposta errada");
+  }
+
+  localStorage.setItem("missaoFranca", JSON.stringify(estado));
+  carregarPergunta();
 }
 
-carregarFase();
+carregarPergunta();
 </script>
 
 </body>
