@@ -2,173 +2,187 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<title>Missão França</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Missão França 🇫🇷</title>
 
 <style>
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f2f7ff;
+  background: #f2f2f2;
 }
 
-.app {
-  max-width: 420px;
-  margin: auto;
-  min-height: 100vh;
-  background: white;
-  display: flex;
-  flex-direction: column;
-}
-
+/* TOPO */
 header {
-  background: #58cc02;
+  background: #0b2c4d; /* azul marinho */
   color: white;
-  padding: 15px;
   text-align: center;
-  font-size: 20px;
+  padding: 18px;
+  font-size: 22px;
   font-weight: bold;
 }
 
+/* CARD */
 .card {
-  margin: 20px;
+  max-width: 420px;
+  background: white;
+  margin: 25px auto;
   padding: 20px;
   border-radius: 16px;
-  background: #ffffff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
   text-align: center;
 }
 
+/* FRASE */
+#frase {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* BOTÕES */
 button {
   width: 100%;
   padding: 14px;
-  margin-top: 10px;
+  margin: 8px 0;
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  background: #1cb0f6;
+  border-radius: 10px;
+  font-size: 18px;
+}
+
+#ouvir {
+  background: #ff4d4d;
   color: white;
 }
 
-.listen {
-  background: #ff4b4b;
+.opcao {
+  background: #1da1f2;
+  color: white;
 }
 
-.nav {
+.opcao:hover {
+  opacity: 0.85;
+}
+
+/* XP */
+#xp {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+/* MENU */
+.menu {
   display: flex;
   justify-content: space-around;
-  border-top: 1px solid #ddd;
-  padding: 10px 0;
-}
-
-.nav button {
-  width: auto;
-  background: none;
-  color: #555;
-  font-size: 14px;
+  margin-top: 20px;
+  font-size: 18px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
-
 <header>Missão França 🇫🇷</header>
 
-<div id="tela-jogo" class="card">
-  <h3 id="frase"></h3>
-  <button class="listen" onclick="ouvir()">🔊 Ouvir</button>
-  <button onclick="responder(0)" id="b0"></button>
-  <button onclick="responder(1)" id="b1"></button>
-  <button onclick="responder(2)" id="b2"></button>
-  <p id="status"></p>
+<div class="card">
+  <div id="frase"></div>
+
+  <button id="ouvir">🔊 Ouvir</button>
+
+  <button class="opcao" onclick="responder(0)"></button>
+  <button class="opcao" onclick="responder(1)"></button>
+  <button class="opcao" onclick="responder(2)"></button>
+
+  <div id="xp"></div>
 </div>
 
-<div id="tela-conquistas" class="card" style="display:none">
-  <h3>🏆 Conquistas</h3>
-  <ul id="lista"></ul>
-</div>
-
-<div class="nav">
-  <button onclick="mostrar('jogo')">🎮 Jogo</button>
-  <button onclick="mostrar('conquistas')">🏆 Conquistas</button>
-</div>
-
+<div class="menu">
+  🎮 Jogo
+  🏆 Conquistas
 </div>
 
 <script>
 const frases = [
-"Bonjour","Merci","Au revoir","S'il vous plaît","Pardon",
-"Je voudrais un café","L'addition, s'il vous plaît","Où sont les toilettes ?",
-"Combien ça coûte ?","Je ne comprends pas","Parlez-vous portugais ?",
-"Je cherche un hôtel","À quelle heure ouvre ?","C'est bon","Très bien",
-"Excusez-moi","Pouvez-vous m'aider ?","Je suis perdu",
-"Où est le métro ?","Une table pour deux","J'ai une réservation",
-"Je voudrais payer","C'est délicieux","À bientôt",
-"Bonne journée","Bonsoir","Bonne nuit","Je m'appelle…",
-"Enchanté","D'accord"
+  {
+    frase: "Bonjour",
+    opcoes: ["Olá", "Obrigado", "Tchau"],
+    correta: 0
+  },
+  {
+    frase: "Comment ça va ?",
+    opcoes: ["Quanto custa?", "Como vai?", "Onde fica?"],
+    correta: 1
+  },
+  {
+    frase: "Merci beaucoup",
+    opcoes: ["Muito obrigado", "Por favor", "Bom dia"],
+    correta: 0
+  },
+  {
+    frase: "Je m'appelle Marie",
+    opcoes: ["Meu nome é Marie", "Eu moro aqui", "Eu trabalho aqui"],
+    correta: 0
+  },
+  {
+    frase: "Où est la toilette ?",
+    opcoes: ["Onde fica o banheiro?", "Quanto custa?", "Que horas são?"],
+    correta: 0
+  },
+  {
+    frase: "Je ne comprends pas",
+    opcoes: ["Eu não entendo", "Eu concordo", "Eu gosto"],
+    correta: 0
+  },
+  {
+    frase: "Parlez-vous portugais ?",
+    opcoes: ["Você fala português?", "Você mora aqui?", "Você trabalha aqui?"],
+    correta: 0
+  },
+  {
+    frase: "À bientôt",
+    opcoes: ["Até logo", "Boa noite", "Obrigado"],
+    correta: 0
+  }
 ];
 
-let estado = JSON.parse(localStorage.getItem("mf3")) || {
+let estado = JSON.parse(localStorage.getItem("missaoFranca")) || {
   i: 0,
-  xp: 0,
-  nivel: 1,
-  conquistas: []
+  xp: 0
 };
 
-let voz = null;
-speechSynthesis.onvoiceschanged = () => {
-  voz = speechSynthesis.getVoices().find(v => v.lang === 'fr-FR');
-};
-
-function ouvir() {
-  const u = new SpeechSynthesisUtterance(frases[estado.i]);
-  u.lang = 'fr-FR';
-  u.rate = 0.9;
-  if (voz) u.voice = voz;
-  speechSynthesis.speak(u);
-}
+const frase = document.getElementById("frase");
+const botoes = document.querySelectorAll(".opcao");
+const xp = document.getElementById("xp");
 
 function carregar() {
-  frase.innerText = frases[estado.i];
-  const correta = frases[estado.i];
-  const op = embaralhar([correta, frases[Math.floor(Math.random()*frases.length)], frases[Math.floor(Math.random()*frases.length)]]);
-  b0.innerText = op[0];
-  b1.innerText = op[1];
-  b2.innerText = op[2];
-  status.innerText = `XP: ${estado.xp} | Nível: ${estado.nivel}`;
+  const atual = frases[estado.i];
+  frase.innerText = atual.frase;
+
+  botoes.forEach((btn, index) => {
+    btn.innerText = atual.opcoes[index];
+  });
+
+  xp.innerText = "XP: " + estado.xp;
 }
 
-function responder(n) {
-  if ([b0,b1,b2][n].innerText === frases[estado.i]) {
+function falar() {
+  const utter = new SpeechSynthesisUtterance(frases[estado.i].frase);
+  utter.lang = "fr-FR";
+  speechSynthesis.speak(utter);
+}
+
+document.getElementById("ouvir").onclick = falar;
+
+function responder(opcao) {
+  if (opcao === frases[estado.i].correta) {
     estado.xp += 10;
-    if (estado.xp % 50 === 0) {
-      estado.conquistas.push("🔥 " + estado.xp + " XP alcançados");
-    }
-    if (estado.xp % 40 === 0) estado.nivel++;
-    estado.i = (estado.i + 1) % frases.length;
-  } else {
-    alert("❌ Errado");
   }
-  salvar();
+
+  estado.i++;
+  if (estado.i >= frases.length) estado.i = 0;
+
+  localStorage.setItem("missaoFranca", JSON.stringify(estado));
   carregar();
-}
-
-function salvar() {
-  localStorage.setItem("mf3", JSON.stringify(estado));
-}
-
-function mostrar(t) {
-  tela-jogo.style.display = t === 'jogo' ? 'block' : 'none';
-  tela-conquistas.style.display = t === 'conquistas' ? 'block' : 'none';
-  if (t === 'conquistas') {
-    lista.innerHTML = estado.conquistas.map(c => `<li>${c}</li>`).join("");
-  }
-}
-
-function embaralhar(a) {
-  return a.sort(() => Math.random() - 0.5);
 }
 
 carregar();
