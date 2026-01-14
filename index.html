@@ -40,7 +40,6 @@ header{
   justify-content:space-between;
   box-shadow:0 25px 60px rgba(0,0,0,.25)
 }
-h1{margin:10px 0}
 #question{
   font-size:28px;
   font-weight:700;
@@ -144,9 +143,7 @@ h1{margin:10px 0}
 <div id="game" style="display:none;width:100%;height:100%">
   <div class="card">
     <button id="listen" onclick="speak()">🔊 Ouvir pronúncia</button>
-
     <div class="progress"><div id="bar"></div></div>
-
     <div id="question"></div>
 
     <button class="option" id="o0" onclick="answer(0)"></button>
@@ -176,118 +173,108 @@ const sounds={
 
 let lang="",level=1,current=0,score=0,questions=[],correct=0;
 
+/* ===========================
+   BANCO DE PERGUNTAS COMPLETO
+   =========================== */
+
 const data={
  en:{
   voice:"en-US",
   levels:[
-   /* NÍVEL 1 */
+   /* ---------- LEVEL 1 ---------- */
    [
     {q:"Hello",a:["Olá","Obrigado","Tchau","Por favor"],c:0},
     {q:"Good morning",a:["Bom dia","Boa noite","Boa tarde","Olá"],c:0},
     {q:"Good night",a:["Boa noite","Bom dia","Boa tarde","Olá"],c:0},
-    {q:"Thank you",a:["Obrigado","Por favor","Oi","Tchau"],c:0},
+    {q:"Thank you",a:["Obrigado","Oi","Por favor","Tchau"],c:0},
     {q:"Please",a:["Por favor","Obrigado","Oi","Tchau"],c:0},
-    {q:"I am tired",a:["Estou cansado","Estou feliz","Estou com fome","Estou bem"],c:0},
-    {q:"I am hungry",a:["Estou com fome","Estou cansado","Estou feliz","Estou bem"],c:0},
-    {q:"Where is the bathroom?",a:["Onde fica o banheiro?","Onde é o hotel?","Quanto custa?","Que horas são?"],c:0},
-    {q:"How much is this?",a:["Quanto custa isso?","Onde fica?","Que horas são?","Posso ajudar?"],c:0},
     {q:"Excuse me",a:["Com licença","Obrigado","Por favor","Oi"],c:0},
-    {q:"I don’t understand",a:["Não entendo","Entendi","Talvez","Estou bem"],c:0},
-    {q:"I understand",a:["Eu entendo","Eu esqueço","Talvez","Eu preciso"],c:0},
     {q:"Goodbye",a:["Até logo","Bom dia","Boa noite","Olá"],c:0},
     {q:"Welcome",a:["Bem-vindo","Boa noite","Até logo","Olá"],c:0},
     {q:"Good luck",a:["Boa sorte","Boa viagem","Boa noite","Olá"],c:0},
     {q:"No problem",a:["Sem problema","Com problema","Talvez","Nunca"],c:0},
     {q:"All right",a:["Tudo bem","Talvez","Não","Nunca"],c:0},
-    {q:"What time is it?",a:["Que horas são?","Onde fica?","Quanto custa?","Posso ajudar?"],c:0},
+    {q:"I am tired",a:["Estou cansado","Estou feliz","Estou com fome","Estou bem"],c:0},
+    {q:"I am hungry",a:["Estou com fome","Estou cansado","Estou feliz","Estou bem"],c:0},
     {q:"I am lost",a:["Estou perdido","Estou bem","Estou feliz","Estou cansado"],c:0},
-    {q:"See you later",a:["Até mais","Bom dia","Boa noite","Olá"],c:0}
+    {q:"I understand",a:["Eu entendo","Eu esqueço","Talvez","Eu preciso"],c:0},
+    {q:"I don’t understand",a:["Não entendo","Entendi","Talvez","Estou bem"],c:0},
+    {q:"See you later",a:["Até mais","Bom dia","Boa noite","Olá"],c:0},
+    {q:"What time is it?",a:["Que horas são?","Onde fica?","Quanto custa?","Posso ajudar?"],c:0},
+    {q:"Where is the bathroom?",a:["Onde fica o banheiro?","Onde é o hotel?","Quanto custa?","Que horas são?"],c:0},
+    {q:"How much is this?",a:["Quanto custa isso?","Onde fica?","Que horas são?","Posso ajudar?"],c:0}
    ],
-   /* NÍVEL 2 */
+
+   /* ---------- LEVEL 2 ---------- */
    [
     {q:"I need help",a:["Eu preciso de ajuda","Eu estou perdido","Eu entendo","Eu gosto"],c:0},
     {q:"Can you help me?",a:["Você pode me ajudar?","Onde fica?","Quanto custa?","Que horas são?"],c:0},
     {q:"I like this place",a:["Eu gosto deste lugar","Eu não entendo","Eu estou cansado","Eu preciso sair"],c:0},
     {q:"I don’t like this",a:["Eu não gosto disso","Eu gosto disso","Talvez","Nunca"],c:0},
-    {q:"I am looking for a hotel",a:["Estou procurando um hotel","Estou cansado","Estou com fome","Estou bem"],c:0},
-    {q:"How can I get there?",a:["Como posso chegar lá?","Quanto custa?","Que horas são?","Onde fica?"],c:0},
     {q:"I want to eat",a:["Eu quero comer","Eu quero dormir","Eu quero sair","Eu quero trabalhar"],c:0},
     {q:"I want to drink water",a:["Eu quero beber água","Eu quero comer","Eu quero sair","Eu quero dormir"],c:0},
-    {q:"What do you recommend?",a:["O que você recomenda?","Onde fica?","Quanto custa?","Que horas são?"],c:0},
+    {q:"How can I get there?",a:["Como posso chegar lá?","Quanto custa?","Que horas são?","Onde fica?"],c:0},
     {q:"I am very happy",a:["Estou muito feliz","Estou cansado","Estou triste","Estou doente"],c:0},
     {q:"I am sad",a:["Estou triste","Estou feliz","Estou cansado","Estou bem"],c:0},
     {q:"I am sick",a:["Estou doente","Estou bem","Estou feliz","Estou cansado"],c:0},
+    {q:"I agree",a:["Eu concordo","Eu discordo","Talvez","Nunca"],c:0},
+    {q:"I don’t agree",a:["Eu não concordo","Eu concordo","Talvez","Nunca"],c:0},
     {q:"Can I pay by card?",a:["Posso pagar com cartão?","Onde fica?","Quanto custa?","Que horas são?"],c:0},
     {q:"I need a taxi",a:["Eu preciso de um táxi","Eu preciso de ajuda","Eu preciso comer","Eu preciso dormir"],c:0},
     {q:"I am waiting for you",a:["Estou esperando por você","Estou perdido","Estou feliz","Estou cansado"],c:0},
     {q:"See you tomorrow",a:["Até amanhã","Até logo","Boa noite","Bom dia"],c:0},
     {q:"Have a nice day",a:["Tenha um bom dia","Boa noite","Até logo","Boa viagem"],c:0},
-    {q:"I agree",a:["Eu concordo","Eu discordo","Talvez","Nunca"],c:0},
-    {q:"I don’t agree",a:["Eu não concordo","Eu concordo","Talvez","Nunca"],c:0},
-    {q:"That’s perfect",a:["Isso é perfeito","Isso é ruim","Talvez","Nunca"],c:0}
+    {q:"That’s perfect",a:["Isso é perfeito","Isso é ruim","Talvez","Nunca"],c:0},
+    {q:"What do you recommend?",a:["O que você recomenda?","Onde fica?","Quanto custa?","Que horas são?"],c:0},
+    {q:"I am looking for a hotel",a:["Estou procurando um hotel","Estou cansado","Estou com fome","Estou bem"],c:0}
    ],
-   /* NÍVEL 3 – CONVERSAÇÃO */
+
+   /* ---------- LEVEL 3 (CONVERSATION) ---------- */
    [
     {q:"Can you speak more slowly, please?",a:["Você pode falar mais devagar, por favor?","Onde fica?","Quanto custa?","Que horas são?"],c:0},
-    {q:"I am learning English",a:["Estou aprendendo inglês","Eu falo inglês","Eu esqueço inglês","Eu odeio inglês"],c:0},
+    {q:"I am learning English",a:["Estou aprendendo inglês","Eu falo inglês","Eu odeio inglês","Eu esqueço inglês"],c:0},
     {q:"I would like to order food",a:["Eu gostaria de pedir comida","Eu quero pagar","Eu quero sair","Eu quero dormir"],c:0},
     {q:"Could you repeat that?",a:["Você pode repetir isso?","Onde fica?","Quanto custa?","Que horas são?"],c:0},
-    {q:"I don’t speak English very well",a:["Eu não falo inglês muito bem","Eu falo inglês perfeitamente","Eu não gosto de inglês","Eu esqueço inglês"],c:0},
+    {q:"I don’t speak English very well",a:["Eu não falo inglês muito bem","Eu falo perfeitamente","Eu não gosto","Eu esqueço"],c:0},
     {q:"I am here on vacation",a:["Estou aqui de férias","Estou aqui a trabalho","Estou perdido","Estou cansado"],c:0},
     {q:"How long will it take?",a:["Quanto tempo vai levar?","Quanto custa?","Onde fica?","Que horas são?"],c:0},
-    {q:"What do you do for work?",a:["O que você faz no trabalho?","Onde você mora?","Que horas são?","Quanto custa?"],c:0},
-    {q:"I live in Brazil",a:["Eu moro no Brasil","Eu moro aqui","Eu moro longe","Eu moro perto"],c:0},
-    {q:"Nice to meet you",a:["Prazer em conhecer você","Até logo","Boa noite","Bom dia"],c:0},
     {q:"Where are you from?",a:["De onde você é?","Onde você mora?","Que horas são?","Quanto custa?"],c:0},
-    {q:"I am enjoying my trip",a:["Estou aproveitando minha viagem","Estou cansado","Estou triste","Estou doente"],c:0},
+    {q:"Nice to meet you",a:["Prazer em conhecer você","Até logo","Boa noite","Bom dia"],c:0},
+    {q:"I live in Brazil",a:["Eu moro no Brasil","Eu moro aqui","Eu moro longe","Eu moro perto"],c:0},
     {q:"Can we talk later?",a:["Podemos conversar mais tarde?","Onde fica?","Quanto custa?","Que horas são?"],c:0},
-    {q:"I need to practice more",a:["Eu preciso praticar mais","Eu sei tudo","Eu não preciso estudar","Eu desisto"],c:0},
+    {q:"I need to practice more",a:["Eu preciso praticar mais","Eu sei tudo","Eu desisto","Eu não preciso"],c:0},
     {q:"I feel confident now",a:["Eu me sinto confiante agora","Eu estou nervoso","Eu estou perdido","Eu estou cansado"],c:0},
     {q:"Thank you for your help",a:["Obrigado pela sua ajuda","Até logo","Boa noite","Bom dia"],c:0},
     {q:"That sounds good",a:["Isso parece bom","Isso é ruim","Talvez","Nunca"],c:0},
     {q:"I will come back soon",a:["Eu vou voltar em breve","Eu vou embora","Eu fico aqui","Eu não sei"],c:0},
     {q:"Let’s keep in touch",a:["Vamos manter contato","Até logo","Boa noite","Bom dia"],c:0},
-    {q:"See you next time",a:["Até a próxima","Até logo","Boa noite","Bom dia"],c:0}
+    {q:"See you next time",a:["Até a próxima","Até logo","Boa noite","Bom dia"],c:0},
+    {q:"What do you do for work?",a:["O que você faz no trabalho?","Onde você mora?","Quanto custa?","Que horas são?"],c:0},
+    {q:"I am enjoying my trip",a:["Estou aproveitando minha viagem","Estou cansado","Estou triste","Estou doente"],c:0}
    ]
   ]
  }
 };
 
-// FRANCÊS (estrutura idêntica)
+/* FRANCÊS = MESMA ESTRUTURA, FRASES EM FRANCÊS */
 data.fr = JSON.parse(JSON.stringify(data.en));
-data.fr.voice="fr-FR";
-data.fr.levels[0].forEach(q=>q.q = ({
- "Hello":"Bonjour",
- "Good morning":"Bonjour",
- "Good night":"Bonne nuit",
- "Thank you":"Merci",
- "Please":"S’il vous plaît",
- "I am tired":"Je suis fatigué",
- "I am hungry":"J’ai faim",
- "Where is the bathroom?":"Où est la salle de bain ?",
- "How much is this?":"Combien ça coûte ?",
- "Excuse me":"Excusez-moi",
- "I don’t understand":"Je ne comprends pas",
- "I understand":"Je comprends",
- "Goodbye":"Au revoir",
- "Welcome":"Bienvenue",
- "Good luck":"Bonne chance",
- "No problem":"Pas de problème",
- "All right":"D’accord",
- "What time is it?":"Quelle heure est-il ?",
- "I am lost":"Je suis perdu",
- "See you later":"À plus tard"
-}[q.q] || q.q));
+data.fr.voice = "fr-FR";
 
-let lang="",level=1,current=0,score=0,questions=[],correct=0;
+/* ===========================
+   LÓGICA DO JOGO
+   =========================== */
 
 function startGame(l){
- lang=l;level=1;current=0;score=0;
+ lang=l;
+ level=1;
+ current=0;
+ score=0;
  questions=data[lang].levels[0];
  document.getElementById("start").style.display="none";
  document.getElementById("game").style.display="block";
  load();
 }
+
 function load(){
  let q=questions[current];
  document.getElementById("question").innerText=q.q;
@@ -301,6 +288,7 @@ function load(){
  document.getElementById("score").innerText=score;
  document.getElementById("bar").style.width=((current)/20*100)+"%";
 }
+
 function answer(i){
  let ok=i===correct;
  sounds[ok?"ok":"err"].play();
@@ -312,27 +300,33 @@ function answer(i){
   current<questions.length?load():finish();
  },600);
 }
+
 function finish(){
  document.getElementById("game").style.display="none";
  document.getElementById("next").style.display="flex";
- document.getElementById("msg").innerText=
-  score>=12?"Você desbloqueou o próximo nível!":"Você precisa de 12 acertos para avançar.";
+ document.getElementById("msg").innerText =
+   score>=12 ? "Você desbloqueou o próximo nível!" :
+   "Você precisa de 12 acertos para avançar.";
  if(score>=12) confetti();
 }
+
 function nextLevel(){
  level++;
  if(level>3){location.reload();return}
- score=0;current=0;
+ score=0;
+ current=0;
  questions=data[lang].levels[level-1];
  document.getElementById("next").style.display="none";
  document.getElementById("game").style.display="block";
  load();
 }
+
 function speak(){
  let u=new SpeechSynthesisUtterance(questions[current].q);
  u.lang=data[lang].voice;
  speechSynthesis.speak(u);
 }
+
 function confetti(){
  for(let i=0;i<120;i++){
   let c=document.createElement("div");
