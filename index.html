@@ -5,230 +5,207 @@
 <title>Missão França 🇫🇷</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
+  min-height: 100vh;
   font-family: Arial, sans-serif;
   background: #f2f2f2;
-}
-
-/* ===== TELA INICIAL ===== */
-#start {
-  position: fixed;
-  inset: 0;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: white;
-  text-align: center;
-  background: linear-gradient(
-    120deg,
-    #002654,
-    #ffffff,
-    #ed2939
-  );
-  background-size: 400% 400%;
-  animation: france 8s ease infinite;
 }
 
-@keyframes france {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* APP CENTRAL */
+#app {
+  width: 100%;
+  max-width: 420px;
+  padding: 15px;
+}
+
+/* TOPO */
+header {
+  background: #0b1f3a;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  font-size: 26px;
+  font-weight: bold;
+  border-radius: 14px;
+  margin-bottom: 15px;
+}
+
+/* TELA INICIAL */
+#start {
+  background: linear-gradient(135deg, #002654, #ffffff, #ed2939);
+  padding: 35px 20px;
+  border-radius: 16px;
+  text-align: center;
+  animation: fade 1.2s ease;
 }
 
 #start h1 {
-  font-size: 32px;
+  font-size: 36px;
   margin-bottom: 10px;
-  text-shadow: 0 3px 6px rgba(0,0,0,.4);
 }
 
 #start p {
-  font-size: 16px;
-  margin-bottom: 30px;
-  color: #111;
+  font-size: 20px;
 }
 
 #start button {
-  padding: 16px 30px;
-  font-size: 18px;
-  border: none;
-  border-radius: 30px;
-  background: #0a1f44;
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 6px 15px rgba(0,0,0,.3);
-}
-
-/* ===== JOGO ===== */
-header {
+  margin-top: 25px;
+  padding: 18px;
   width: 100%;
-  background: #0a1f44;
-  color: white;
-  padding: 15px;
-  text-align: center;
   font-size: 22px;
+  border-radius: 14px;
+  border: none;
+  background: #1e90ff;
+  color: white;
+  font-weight: bold;
 }
 
-.container {
-  max-width: 420px;
+/* CARD JOGO */
+.card {
   background: white;
-  margin: 30px auto;
-  padding: 20px;
   border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+  padding: 20px;
   text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  animation: fade 0.6s ease;
 }
 
-button {
+/* BOTÕES */
+button.option {
   width: 100%;
   padding: 14px;
-  margin: 8px 0;
+  margin-top: 10px;
+  font-size: 18px;
+  border-radius: 12px;
   border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
+  background: #2196f3;
+  color: white;
 }
 
-.btn-audio { background: #ff4d4d; color: white; }
-.btn { background: #1da1f2; color: white; }
-.correct { background: #2ecc71 !important; }
-.wrong { background: #e74c3c !important; }
-
-.fade {
-  animation: pulse .35s;
-}
-@keyframes pulse {
-  from { transform: scale(.95); opacity: .6; }
-  to { transform: scale(1); opacity: 1; }
+button.option.correct {
+  background: #4caf50;
 }
 
-.status {
-  margin-top: 12px;
-  font-size: 14px;
+button.option.wrong {
+  background: #f44336;
+}
+
+#listen {
+  background: #ff5252;
+  margin-bottom: 15px;
+}
+
+/* ANIMAÇÃO */
+@keyframes fade {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
 
 <body>
+<div id="app">
+
+<header>Missão França 🇫🇷</header>
 
 <!-- TELA INICIAL -->
 <div id="start">
-  <h1>🎮 Missão França 🇫🇷</h1>
-  <p>Aprenda francês do zero</p>
-  <button onclick="iniciar()">▶️ Iniciar Estudo</button>
+  <h1>Bienvenue 🇫🇷</h1>
+  <p>Aprenda francês jogando</p>
+  <button onclick="startGame()">Iniciar estudo</button>
 </div>
 
 <!-- JOGO -->
 <div id="game" style="display:none;">
-<header>Missão França 🇫🇷</header>
+  <div class="card">
+    <button id="listen" class="option" onclick="speak()">🔊 Ouvir</button>
+    <h3 id="question"></h3>
 
-<div class="container" id="card">
-  <button class="btn-audio" onclick="ouvir()">🔊 Ouvir</button>
-  <h3 id="pergunta"></h3>
-  <div id="opcoes"></div>
+    <button class="option" onclick="answer(0)" id="a0"></button>
+    <button class="option" onclick="answer(1)" id="a1"></button>
+    <button class="option" onclick="answer(2)" id="a2"></button>
 
-  <div class="status">
-    <div id="nivel"></div>
-    <div id="xp"></div>
-    <div id="conquistas"></div>
-    <div id="stats"></div>
+    <p style="margin-top:15px;">
+      Acertos: <span id="score">0</span>
+    </p>
   </div>
 </div>
+
 </div>
 
 <script>
-function iniciar(){
-  document.getElementById("start").style.display="none";
-  document.getElementById("game").style.display="block";
+const questions = [
+  {
+    fr: "Bonjour",
+    answers: ["Olá", "Obrigado", "Tchau"],
+    correct: 0
+  },
+  {
+    fr: "Merci",
+    answers: ["Por favor", "Obrigado", "Desculpa"],
+    correct: 1
+  },
+  {
+    fr: "Au revoir",
+    answers: ["Olá", "Até logo", "Boa noite"],
+    correct: 1
+  }
+];
+
+let current = 0;
+let score = 0;
+
+function startGame() {
+  document.getElementById("start").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  loadQuestion();
 }
 
-const iniciante = [
- {fr:"Je suis",pt:"Eu sou"},
- {fr:"J'ai",pt:"Eu tenho"},
- {fr:"Je veux",pt:"Eu quero"},
- {fr:"Je peux",pt:"Eu posso"},
- {fr:"Je vais",pt:"Eu vou"},
- {fr:"C'est",pt:"É"},
- {fr:"Où est",pt:"Onde está"},
- {fr:"Il y a",pt:"Existe"},
- {fr:"Je comprends",pt:"Eu entendo"},
- {fr:"Je ne sais pas",pt:"Não sei"},
- {fr:"J'aime",pt:"Eu gosto"},
- {fr:"Je parle",pt:"Eu falo"}
-];
-
-const frases = [
- {fr:"Pouvez-vous m'aider?",pt:"Você pode me ajudar?"},
- {fr:"Où est la gare?",pt:"Onde fica a estação?"},
- {fr:"Je suis fatigué",pt:"Estou cansado"},
- {fr:"Je voudrais de l'eau",pt:"Eu gostaria de água"},
- {fr:"Combien ça coûte?",pt:"Quanto custa?"},
- {fr:"Je parle un peu français",pt:"Falo um pouco de francês"}
-];
-
-let acertos = Number(localStorage.getItem("acertos")) || 0;
-let hoje = new Date().toLocaleDateString();
-let stats = JSON.parse(localStorage.getItem("stats") || "{}");
-stats[hoje] = stats[hoje] || 0;
-
-function banco(){ return acertos < 25 ? iniciante : frases; }
-
-function novaPergunta(){
-  const lista = banco();
-  const q = lista[Math.floor(Math.random()*lista.length)];
-  document.getElementById("pergunta").innerText =
-    (acertos<25?"(Iniciante) ":"(Frases) ")+q.fr;
-
-  let op=[...lista].sort(()=>.5-Math.random()).slice(0,3);
-  if(!op.includes(q)) op[0]=q;
-
-  const div=document.getElementById("opcoes");
-  div.innerHTML="";
-  op.sort(()=>.5-Math.random()).forEach(o=>{
-    let b=document.createElement("button");
-    b.className="btn";
-    b.innerText=o.pt;
-    b.onclick=()=>responder(o.pt===q.pt,b);
-    div.appendChild(b);
+function loadQuestion() {
+  const q = questions[current];
+  document.getElementById("question").innerText = q.fr;
+  q.answers.forEach((a,i)=>{
+    const btn = document.getElementById("a"+i);
+    btn.innerText = a;
+    btn.className = "option";
   });
-
-  window.atual=q;
-  atualizar();
 }
 
-function responder(ok,btn){
-  const card=document.getElementById("card");
-  btn.classList.add(ok?"correct":"wrong");
-  if(ok){ acertos++; stats[hoje]++; }
-  localStorage.setItem("acertos",acertos);
-  localStorage.setItem("stats",JSON.stringify(stats));
-  card.classList.add("fade");
-  setTimeout(()=>{card.classList.remove("fade");novaPergunta();},350);
+function answer(i) {
+  const q = questions[current];
+  const btn = document.getElementById("a"+i);
+
+  if (i === q.correct) {
+    btn.classList.add("correct");
+    score++;
+    document.getElementById("score").innerText = score;
+  } else {
+    btn.classList.add("wrong");
+  }
+
+  setTimeout(()=>{
+    current = (current + 1) % questions.length;
+    loadQuestion();
+  }, 800);
 }
 
-function atualizar(){
-  document.getElementById("xp").innerText="Acertos: "+acertos;
-  document.getElementById("nivel").innerText=
-    acertos<25?"Modo Iniciante":"Modo Frases";
-  let c=[];
-  if(acertos>=10)c.push("🥉");
-  if(acertos>=25)c.push("🥈");
-  if(acertos>=50)c.push("🥇");
-  document.getElementById("conquistas").innerText=
-    c.length?"Conquistas: "+c.join(" "):"";
-  document.getElementById("stats").innerText=
-    "Hoje: "+stats[hoje]+" acertos";
+function speak() {
+  const utter = new SpeechSynthesisUtterance(
+    questions[current].fr
+  );
+  utter.lang = "fr-FR";
+  utter.rate = 0.9;
+  speechSynthesis.speak(utter);
 }
-
-function ouvir(){
-  let u=new SpeechSynthesisUtterance(atual.fr);
-  u.lang="fr-FR";
-  speechSynthesis.speak(u);
-}
-
-novaPergunta();
 </script>
 
 </body>
-</html> 
+</html>
