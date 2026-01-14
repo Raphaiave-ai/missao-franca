@@ -256,9 +256,90 @@ const data={
  }
 };
 
-/* FRANCÊS = MESMA ESTRUTURA, FRASES EM FRANCÊS */
-data.fr = JSON.parse(JSON.stringify(data.en));
-data.fr.voice = "fr-FR";
+data.fr = {
+  voice: "fr-FR",
+  levels: [
+
+    /* ======================
+       NÍVEL 1 – BÁSICO
+       ====================== */
+    [
+      {q:"Bonjour", a:["Olá","Obrigado","Tchau","Por favor"], c:0},
+      {q:"Merci", a:["Obrigado","Olá","Tchau","Por favor"], c:0},
+      {q:"Au revoir", a:["Tchau","Olá","Obrigado","Por favor"], c:0},
+      {q:"S'il vous plaît", a:["Por favor","Obrigado","Olá","Tchau"], c:0},
+      {q:"Bonne nuit", a:["Boa noite","Bom dia","Boa tarde","Olá"], c:0},
+      {q:"Bon matin", a:["Bom dia","Boa noite","Boa tarde","Olá"], c:0},
+      {q:"Bienvenue", a:["Bem-vindo","Tchau","Olá","Obrigado"], c:0},
+      {q:"Bonne chance", a:["Boa sorte","Boa noite","Até logo","Olá"], c:0},
+      {q:"Pas de problème", a:["Sem problema","Com problema","Talvez","Nunca"], c:0},
+      {q:"D'accord", a:["Tudo bem","Talvez","Nunca","Não"], c:0},
+      {q:"Je suis fatigué", a:["Estou cansado","Estou feliz","Estou com fome","Estou bem"], c:0},
+      {q:"Je suis heureux", a:["Estou feliz","Estou triste","Estou cansado","Estou doente"], c:0},
+      {q:"Je suis triste", a:["Estou triste","Estou feliz","Estou bem","Estou cansado"], c:0},
+      {q:"Je suis perdu", a:["Estou perdido","Estou bem","Estou feliz","Estou cansado"], c:0},
+      {q:"Je comprends", a:["Eu entendo","Eu esqueço","Talvez","Eu preciso"], c:0},
+      {q:"Je ne comprends pas", a:["Não entendo","Entendi","Talvez","Estou bem"], c:0},
+      {q:"À bientôt", a:["Até logo","Bom dia","Boa noite","Olá"], c:0},
+      {q:"À plus tard", a:["Até mais","Bom dia","Boa noite","Olá"], c:0},
+      {q:"Où sont les toilettes ?", a:["Onde fica o banheiro?","Onde é o hotel?","Quanto custa?","Que horas são?"], c:0},
+      {q:"Combien ça coûte ?", a:["Quanto custa isso?","Onde fica?","Que horas são?","Posso ajudar?"], c:0}
+    ],
+
+    /* ======================
+       NÍVEL 2 – FRASES
+       ====================== */
+    [
+      {q:"J'ai besoin d'aide", a:["Preciso de ajuda","Estou perdido","Entendo","Estou bem"], c:0},
+      {q:"Pouvez-vous m'aider ?", a:["Você pode me ajudar?","Onde fica?","Quanto custa?","Que horas são?"], c:0},
+      {q:"Je veux manger", a:["Quero comer","Quero dormir","Quero sair","Quero trabalhar"], c:0},
+      {q:"Je veux boire de l'eau", a:["Quero beber água","Quero comer","Quero sair","Quero dormir"], c:0},
+      {q:"Je cherche un hôtel", a:["Estou procurando um hotel","Estou perdido","Estou cansado","Estou bem"], c:0},
+      {q:"Je veux payer par carte", a:["Quero pagar com cartão","Quero pagar em dinheiro","Quero sair","Quero esperar"], c:0},
+      {q:"Où est le restaurant ?", a:["Onde fica o restaurante?","Onde é o banheiro?","Quanto custa?","Que horas são?"], c:0},
+      {q:"Je suis très heureux", a:["Estou muito feliz","Estou cansado","Estou triste","Estou doente"], c:0},
+      {q:"Je suis malade", a:["Estou doente","Estou bem","Estou feliz","Estou cansado"], c:0},
+      {q:"Je suis en retard", a:["Estou atrasado","Estou cedo","Estou bem","Estou cansado"], c:0},
+      {q:"Je suis d'accord", a:["Eu concordo","Eu discordo","Talvez","Nunca"], c:0},
+      {q:"Je ne suis pas d'accord", a:["Eu não concordo","Eu concordo","Talvez","Nunca"], c:0},
+      {q:"Pouvez-vous répéter ?", a:["Pode repetir?","Onde fica?","Quanto custa?","Que horas são?"], c:0},
+      {q:"Parlez-vous portugais ?", a:["Você fala português?","Você fala francês?","Onde fica?","Que horas são?"], c:0},
+      {q:"Je vous attends", a:["Estou esperando você","Estou perdido","Estou feliz","Estou cansado"], c:0},
+      {q:"À demain", a:["Até amanhã","Até logo","Boa noite","Bom dia"], c:0},
+      {q:"Bonne journée", a:["Tenha um bom dia","Boa noite","Até logo","Boa viagem"], c:0},
+      {q:"C'est parfait", a:["Está perfeito","Está ruim","Talvez","Nunca"], c:0},
+      {q:"Qu'est-ce que vous recommandez ?", a:["O que você recomenda?","Onde fica?","Quanto custa?","Que horas são?"], c:0},
+      {q:"Je voyage seul", a:["Estou viajando sozinho","Estou trabalhando","Estou perdido","Estou cansado"], c:0}
+    ],
+
+    /* ======================
+       NÍVEL 3 – CONVERSAÇÃO
+       ====================== */
+    [
+      {q:"Je suis en train d'apprendre le français", a:["Estou aprendendo francês","Falo francês","Não gosto","Esqueci"], c:0},
+      {q:"Pouvez-vous parler plus lentement, s'il vous plaît ?", a:["Pode falar mais devagar, por favor?","Onde fica?","Quanto custa?","Que horas são?"], c:0},
+      {q:"Je ne parle pas très bien français", a:["Não falo francês muito bem","Falo perfeitamente","Não gosto","Esqueci"], c:0},
+      {q:"Je suis ici en vacances", a:["Estou aqui de férias","Estou aqui a trabalho","Estou perdido","Estou cansado"], c:0},
+      {q:"D'où venez-vous ?", a:["De onde você é?","Onde você mora?","Que horas são?","Quanto custa?"], c:0},
+      {q:"J'habite au Brésil", a:["Eu moro no Brasil","Eu moro aqui","Eu moro longe","Eu moro perto"], c:0},
+      {q:"Enchanté de vous rencontrer", a:["Prazer em conhecer você","Até logo","Boa noite","Bom dia"], c:0},
+      {q:"Combien de temps ça prend ?", a:["Quanto tempo demora?","Quanto custa?","Onde fica?","Que horas são?"], c:0},
+      {q:"Puis-je vous poser une question ?", a:["Posso te fazer uma pergunta?","Onde fica?","Quanto custa?","Que horas são?"], c:0},
+      {q:"Je dois pratiquer davantage", a:["Preciso praticar mais","Já sei tudo","Desisto","Não preciso"], c:0},
+      {q:"Je me sens plus confiant maintenant", a:["Me sinto mais confiante agora","Estou nervoso","Estou perdido","Estou cansado"], c:0},
+      {q:"Merci pour votre aide", a:["Obrigado pela sua ajuda","Até logo","Boa noite","Bom dia"], c:0},
+      {q:"Cela semble bien", a:["Isso parece bom","Isso é ruim","Talvez","Nunca"], c:0},
+      {q:"Je reviendrai bientôt", a:["Voltarei em breve","Vou embora","Fico aqui","Não sei"], c:0},
+      {q:"Restons en contact", a:["Vamos manter contato","Até logo","Boa noite","Bom dia"], c:0},
+      {q:"À la prochaine", a:["Até a próxima","Até logo","Boa noite","Bom dia"], c:0},
+      {q:"Que faites-vous comme travail ?", a:["O que você faz no trabalho?","Onde você mora?","Quanto custa?","Que horas são?"], c:0},
+      {q:"J'aime beaucoup ce pays", a:["Gosto muito deste país","Não gosto","Talvez","Nunca"], c:0},
+      {q:"Je suis heureux d'être ici", a:["Estou feliz de estar aqui","Estou triste","Estou cansado","Estou doente"], c:0},
+      {q:"Pouvez-vous m'aider encore ?", a:["Pode me ajudar novamente?","Onde fica?","Quanto custa?","Que horas são?"], c:0}
+    ]
+
+  ]
+};
 
 /* ===========================
    LÓGICA DO JOGO
