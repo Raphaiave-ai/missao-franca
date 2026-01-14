@@ -10,44 +10,26 @@
 html,body{margin:0;width:100%;height:100%;font-family:Arial;background:#f2f2f2}
 header{background:#0b1f3a;color:white;text-align:center;padding:22px;font-size:26px;font-weight:bold}
 
-#app{
-  height:calc(100% - 80px);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:12px
-}
+#app{height:calc(100% - 80px);display:flex;justify-content:center;align-items:center;padding:12px}
 
 .card{
-  width:100%;
-  height:100%;
-  max-height:720px;
-  background:white;
-  border-radius:24px;
-  padding:22px;
+  width:100%;height:100%;max-height:720px;
+  background:white;border-radius:24px;padding:22px;
   box-shadow:0 15px 40px rgba(0,0,0,.2);
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
+  display:flex;flex-direction:column;justify-content:space-between
 }
 
 #question{font-size:30px;font-weight:bold;margin:18px 0}
 .option{
-  width:100%;
-  padding:20px;
-  margin-bottom:12px;
-  font-size:22px;
-  border-radius:18px;
-  border:none;
-  background:#2196f3;
-  color:white;
+  width:100%;padding:20px;margin-bottom:12px;
+  font-size:22px;border-radius:18px;border:none;
+  background:#2196f3;color:white
 }
 .correct{background:#4caf50!important}
 .wrong{background:#f44336!important}
 
 #listen{background:#ff5252;color:white;font-size:22px;padding:16px;border-radius:18px;border:none}
 #scoreBox{font-size:20px;text-align:center}
-#achievement{font-size:22px;font-weight:bold;color:#4caf50;margin-top:8px}
 
 .big{width:100%;padding:22px;font-size:26px;border-radius:20px;border:none;font-weight:bold;margin-top:18px}
 .en{background:#1e90ff;color:white}
@@ -60,10 +42,8 @@ header{background:#0b1f3a;color:white;text-align:center;padding:22px;font-size:2
 #start{background:linear-gradient(135deg,#002654,#fff,#ed2939)}
 
 .confetti{
-  position:fixed;
-  width:10px;
-  height:10px;
-  animation:fall 3s linear forwards;
+  position:fixed;width:10px;height:10px;
+  animation:fall 3s linear forwards
 }
 @keyframes fall{
   to{transform:translateY(100vh) rotate(360deg);opacity:0}
@@ -85,18 +65,15 @@ header{background:#0b1f3a;color:white;text-align:center;padding:22px;font-size:2
 
 <div id="game" style="display:none;width:100%;height:100%">
   <div class="card">
-    <button id="listen" onclick="speak()">🔊 Ouvir pronúncia</button>
+    <button id="listen" onclick="speak()">🔊 Ouvir</button>
     <div id="question"></div>
 
-    <div>
-      <button class="option" id="a0" onclick="answer(0)"></button>
-      <button class="option" id="a1" onclick="answer(1)"></button>
-      <button class="option" id="a2" onclick="answer(2)"></button>
-    </div>
+    <button class="option" id="a0" onclick="answer(0)"></button>
+    <button class="option" id="a1" onclick="answer(1)"></button>
+    <button class="option" id="a2" onclick="answer(2)"></button>
 
     <div id="scoreBox">
       Acertos: <span id="score">0</span>/25
-      <div id="achievement"></div>
     </div>
   </div>
 </div>
@@ -111,34 +88,31 @@ header{background:#0b1f3a;color:white;text-align:center;padding:22px;font-size:2
 
 <script>
 const sounds={
-  ok:new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"),
-  err:new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg")
+  ok:new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg"),
+  err:new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg")
 };
 
-let lang="fr",level=1,current=0,score=0,questions=[];
+let lang="fr",level=1,current=0,score=0,questions=[],currentCorrect=0;
 
 const content={
 fr:{voice:"fr-FR",l1:[
-"Bonjour","Merci","Au revoir","S’il vous plaît","Bonsoir","Excusez-moi",
-"Je suis perdu","Où est le métro ?","Parlez-vous portugais ?","Je comprends",
-"Je ne comprends pas","Combien ça coûte ?","Je voudrais de l’eau","À bientôt",
-"D’accord","Pas de problème","Bonne chance","Bienvenue","Bonne nuit",
-"Où est la salle de bain ?","C’est loin ?","Je cherche un hôtel",
-"À quelle heure ?","C’est bon","Je ne sais pas"
-],l2:["Je voudrais réserver une chambre","Pouvez-vous parler plus lentement ?"]},
+{q:"Bonjour",a:["Olá","Obrigado","Tchau"],c:0},
+{q:"Merci",a:["Por favor","Obrigado","Desculpa"],c:1},
+{q:"Au revoir",a:["Até logo","Bom dia","Boa noite"],c:0},
+{q:"S’il vous plaît",a:["Obrigado","Por favor","Oi"],c:1},
+{q:"Je suis perdu",a:["Estou cansado","Estou perdido","Estou bem"],c:1}
+]},
 en:{voice:"en-US",l1:[
-"Hello","Thank you","Goodbye","Please","Good evening","Excuse me",
-"I am lost","Where is the subway?","Do you speak Portuguese?","I understand",
-"I don’t understand","How much does it cost?","I would like some water",
-"See you soon","Alright","No problem","Good luck","Welcome","Good night",
-"Where is the bathroom?","Is it far?","I’m looking for a hotel",
-"What time is it?","It’s good","I don’t know"
-],l2:["I would like to book a room","Can you speak more slowly?"]}
+{q:"Hello",a:["Olá","Obrigado","Tchau"],c:0},
+{q:"Thank you",a:["Por favor","Obrigado","Desculpa"],c:1},
+{q:"Goodbye",a:["Até logo","Bom dia","Boa noite"],c:0},
+{q:"Please",a:["Obrigado","Por favor","Oi"],c:1},
+{q:"I am lost",a:["Estou cansado","Estou perdido","Estou bem"],c:1}
+]}
 };
 
 function selectLang(l){
-  lang=l;
-  level=1;current=0;score=0;
+  lang=l;current=0;score=0;
   questions=content[lang].l1;
   document.getElementById("start").style.display="none";
   document.getElementById("game").style.display="block";
@@ -146,49 +120,47 @@ function selectLang(l){
 }
 
 function load(){
-  document.getElementById("question").innerText=questions[current];
-  ["a0","a1","a2"].forEach((id,i)=>{
-    document.getElementById(id).innerText=i===0?"Correto":"Errado";
-    document.getElementById(id).className="option";
+  const q=questions[current];
+  document.getElementById("question").innerText=q.q;
+
+  const options=[...q.a.map((t,i)=>({t,i}))].sort(()=>Math.random()-0.5);
+  currentCorrect=options.findIndex(o=>o.i===q.c);
+
+  options.forEach((o,i)=>{
+    const b=document.getElementById("a"+i);
+    b.innerText=o.t;
+    b.className="option";
   });
+
   document.getElementById("score").innerText=score;
-  document.getElementById("achievement").innerText=
-    score>=15?"🔥 Pode avançar para o nível 2":"";
 }
 
 function answer(i){
-  const correct=i===0;
+  const correct=i===currentCorrect;
   sounds[correct?"ok":"err"].play();
   if(navigator.vibrate) navigator.vibrate(correct?100:300);
 
-  if(correct){score++;document.getElementById("a0").classList.add("correct")}
-  else document.getElementById("a"+i).classList.add("wrong");
+  document.getElementById("a"+i).classList.add(correct?"correct":"wrong");
+  if(correct) score++;
 
   setTimeout(()=>{
     current++;
-    if(current<questions.length) load();
-    else finishLevel();
+    current<questions.length ? load() : finish();
   },600);
 }
 
-function finishLevel(){
+function finish(){
   document.getElementById("game").style.display="none";
   document.getElementById("nextLevel").style.display="flex";
-  document.getElementById("nextMsg").innerText=
-    score>=15?"Você desbloqueou o nível 2!":"Você precisa de 15 acertos para avançar";
-  if(score>=15) confetti();
+  document.getElementById("nextMsg").innerText =
+    score>=3?"Você pode avançar!":"Tente novamente para avançar";
+  if(score>=3) confetti();
 }
 
-function startLevel2(){
-  level=2;current=0;score=0;
-  questions=content[lang].l2;
-  document.getElementById("nextLevel").style.display="none";
-  document.getElementById("game").style.display="block";
-  load();
-}
+function startLevel2(){ location.reload(); }
 
 function speak(){
-  const u=new SpeechSynthesisUtterance(questions[current]);
+  const u=new SpeechSynthesisUtterance(questions[current].q);
   u.lang=content[lang].voice;
   speechSynthesis.speak(u);
 }
