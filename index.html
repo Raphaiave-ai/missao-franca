@@ -2,80 +2,67 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Missão França</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Missão França 🇫🇷</title>
 
 <style>
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f2f2f2;
+  background: #f0f0f0;
 }
 
-/* TOPO */
 header {
-  background: #0b2c4d; /* azul marinho */
+  background: #0a1f44;
   color: white;
+  padding: 15px;
   text-align: center;
-  padding: 18px;
   font-size: 22px;
-  font-weight: bold;
 }
 
-/* CARD */
-.card {
+.container {
   max-width: 420px;
-  background: white;
   margin: 25px auto;
+  background: white;
   padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,.1);
   text-align: center;
 }
 
-/* FRASE */
-#frase {
-  font-size: 22px;
-  color: #333;
-  margin-bottom: 15px;
-}
-
-/* BOTÕES */
 button {
   width: 100%;
   padding: 14px;
   margin: 8px 0;
   border: none;
   border-radius: 10px;
-  font-size: 18px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-#ouvir {
-  background: #ff4d4d;
-  color: white;
-}
+.btn-audio { background: #ff4d4d; color: white; }
+.btn { background: #1da1f2; color: white; }
 
-.opcao {
-  background: #1da1f2;
-  color: white;
-}
+.correct { background: #2ecc71 !important; }
+.wrong { background: #e74c3c !important; }
 
-.opcao:hover {
-  opacity: 0.85;
-}
-
-/* XP */
-#xp {
+.status {
   margin-top: 10px;
-  font-weight: bold;
+  font-size: 14px;
 }
 
-/* MENU */
-.menu {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
-  font-size: 18px;
+.stats {
+  margin-top: 15px;
+  font-size: 13px;
+  color: #333;
+}
+
+.fade {
+  animation: fade 0.4s;
+}
+
+@keyframes fade {
+  from { transform: scale(0.9); opacity: 0.5; }
+  to { transform: scale(1); opacity: 1; }
 }
 </style>
 </head>
@@ -84,108 +71,133 @@ button {
 
 <header>Missão França 🇫🇷</header>
 
-<div class="card">
-  <div id="frase"></div>
+<div class="container" id="card">
+  <button class="btn-audio" onclick="ouvir()">🔊 Ouvir</button>
 
-  <button id="ouvir">🔊 Ouvir</button>
+  <h3 id="pergunta"></h3>
 
-  <button class="opcao" onclick="responder(0)"></button>
-  <button class="opcao" onclick="responder(1)"></button>
-  <button class="opcao" onclick="responder(2)"></button>
+  <div id="opcoes"></div>
 
-  <div id="xp"></div>
-</div>
+  <div class="status">
+    <div id="nivel"></div>
+    <div id="xp"></div>
+    <div id="conquistas"></div>
+  </div>
 
-<div class="menu">
-  🎮 Jogo
-  🏆 Conquistas
+  <div class="stats" id="stats"></div>
 </div>
 
 <script>
-const frases = [
-  {
-    frase: "Bonjour",
-    opcoes: ["Olá", "Obrigado", "Tchau"],
-    correta: 0
-  },
-  {
-    frase: "Comment ça va ?",
-    opcoes: ["Quanto custa?", "Como vai?", "Onde fica?"],
-    correta: 1
-  },
-  {
-    frase: "Merci beaucoup",
-    opcoes: ["Muito obrigado", "Por favor", "Bom dia"],
-    correta: 0
-  },
-  {
-    frase: "Je m'appelle Marie",
-    opcoes: ["Meu nome é Marie", "Eu moro aqui", "Eu trabalho aqui"],
-    correta: 0
-  },
-  {
-    frase: "Où est la toilette ?",
-    opcoes: ["Onde fica o banheiro?", "Quanto custa?", "Que horas são?"],
-    correta: 0
-  },
-  {
-    frase: "Je ne comprends pas",
-    opcoes: ["Eu não entendo", "Eu concordo", "Eu gosto"],
-    correta: 0
-  },
-  {
-    frase: "Parlez-vous portugais ?",
-    opcoes: ["Você fala português?", "Você mora aqui?", "Você trabalha aqui?"],
-    correta: 0
-  },
-  {
-    frase: "À bientôt",
-    opcoes: ["Até logo", "Boa noite", "Obrigado"],
-    correta: 0
-  }
+const iniciante = [
+ {fr:"Bonjour",pt:"Olá"},
+ {fr:"Merci",pt:"Obrigado"},
+ {fr:"Au revoir",pt:"Tchau"},
+ {fr:"S'il vous plaît",pt:"Por favor"},
+ {fr:"Bonsoir",pt:"Boa noite"},
+ {fr:"Excusez-moi",pt:"Com licença"},
+ {fr:"Très bien",pt:"Muito bem"},
+ {fr:"À bientôt",pt:"Até logo"},
+ {fr:"Oui",pt:"Sim"},
+ {fr:"Non",pt:"Não"},
+ {fr:"Pardon",pt:"Desculpa"},
+ {fr:"Bienvenue",pt:"Bem-vindo"},
+ {fr:"Salut",pt:"Oi"},
+ {fr:"D'accord",pt:"Ok"},
+ {fr:"Merci beaucoup",pt:"Muito obrigado"},
+ {fr:"Je comprends",pt:"Eu entendo"},
+ {fr:"Je ne comprends pas",pt:"Não entendo"},
+ {fr:"Peut-être",pt:"Talvez"},
+ {fr:"Toujours",pt:"Sempre"},
+ {fr:"Jamais",pt:"Nunca"}
 ];
 
-let estado = JSON.parse(localStorage.getItem("missaoFranca")) || {
-  i: 0,
-  xp: 0
-};
+const frases = [
+ {fr:"Je suis fatigué",pt:"Estou cansado"},
+ {fr:"Où est la salle de bain?",pt:"Onde fica o banheiro?"},
+ {fr:"Combien ça coûte?",pt:"Quanto custa?"},
+ {fr:"Je voudrais de l'eau",pt:"Eu gostaria de água"},
+ {fr:"Pouvez-vous m'aider?",pt:"Você pode me ajudar?"},
+ {fr:"Je parle un peu français",pt:"Eu falo um pouco de francês"},
+ {fr:"C'est très bon",pt:"Está muito bom"},
+ {fr:"Je suis perdu",pt:"Estou perdido"},
+ {fr:"À quelle heure?",pt:"Que horas?"},
+ {fr:"Je suis d'accord",pt:"Eu concordo"}
+];
 
-const frase = document.getElementById("frase");
-const botoes = document.querySelectorAll(".opcao");
-const xp = document.getElementById("xp");
+let acertos = Number(localStorage.getItem("acertos")) || 0;
+let hoje = new Date().toLocaleDateString();
+let stats = JSON.parse(localStorage.getItem("stats")||"{}");
+stats[hoje] = stats[hoje] || 0;
 
-function carregar() {
-  const atual = frases[estado.i];
-  frase.innerText = atual.frase;
+function bancoAtual(){
+  return acertos < 50 ? iniciante : frases;
+}
 
-  botoes.forEach((btn, index) => {
-    btn.innerText = atual.opcoes[index];
+function novaPergunta(){
+  const banco = bancoAtual();
+  const q = banco[Math.floor(Math.random()*banco.length)];
+  document.getElementById("pergunta").innerText =
+    (acertos<50?"(Iniciante) ":"(Frases) ") + q.fr;
+
+  let opcoes = [...banco].sort(()=>0.5-Math.random()).slice(0,3);
+  if(!opcoes.includes(q)) opcoes[0]=q;
+
+  const div = document.getElementById("opcoes");
+  div.innerHTML="";
+  opcoes.sort(()=>0.5-Math.random()).forEach(o=>{
+    let b=document.createElement("button");
+    b.className="btn";
+    b.innerText=o.pt;
+    b.onclick=()=>responder(o.pt===q.pt,b);
+    div.appendChild(b);
   });
 
-  xp.innerText = "XP: " + estado.xp;
+  window.atual=q;
+  atualizarStatus();
 }
 
-function falar() {
-  const utter = new SpeechSynthesisUtterance(frases[estado.i].frase);
-  utter.lang = "fr-FR";
-  speechSynthesis.speak(utter);
-}
-
-document.getElementById("ouvir").onclick = falar;
-
-function responder(opcao) {
-  if (opcao === frases[estado.i].correta) {
-    estado.xp += 10;
+function responder(ok,btn){
+  const card=document.getElementById("card");
+  if(ok){
+    btn.classList.add("correct");
+    acertos++;
+    stats[hoje]++;
+  }else{
+    btn.classList.add("wrong");
   }
 
-  estado.i++;
-  if (estado.i >= frases.length) estado.i = 0;
+  localStorage.setItem("acertos",acertos);
+  localStorage.setItem("stats",JSON.stringify(stats));
 
-  localStorage.setItem("missaoFranca", JSON.stringify(estado));
-  carregar();
+  card.classList.add("fade");
+  setTimeout(()=>{
+    card.classList.remove("fade");
+    novaPergunta();
+  },400);
 }
 
-carregar();
+function atualizarStatus(){
+  document.getElementById("xp").innerText="Acertos: "+acertos;
+  document.getElementById("nivel").innerText=
+    acertos<50?"Modo Iniciante":"Modo Frases";
+  let c=[];
+  if(acertos>=10)c.push("🥉");
+  if(acertos>=25)c.push("🥈");
+  if(acertos>=50)c.push("🥇");
+  document.getElementById("conquistas").innerText=
+    c.length?"Conquistas: "+c.join(" "):"";
+
+  document.getElementById("stats").innerText=
+    "Hoje: "+stats[hoje]+" acertos";
+}
+
+function ouvir(){
+  let u=new SpeechSynthesisUtterance(atual.fr);
+  u.lang="fr-FR";
+  speechSynthesis.speak(u);
+}
+
+novaPergunta();
 </script>
 
 </body>
